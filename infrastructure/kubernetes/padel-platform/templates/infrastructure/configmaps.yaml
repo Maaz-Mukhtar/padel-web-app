@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "padel-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: config
+data:
+  NODE_ENV: {{ .Values.global.environment | quote }}
+  API_GATEWAY_PORT: {{ .Values.services.apiGateway.port | quote }}
+  AUTH_SERVICE_PORT: {{ .Values.services.auth.port | quote }}
+  USER_SERVICE_PORT: {{ .Values.services.user.port | quote }}
+  BOOKING_SERVICE_PORT: {{ .Values.services.booking.port | quote }}
+  NOTIFICATION_SERVICE_PORT: {{ .Values.services.notification.port | quote }}
+  DB_HOST: {{ .Values.postgresql.host | quote }}
+  DB_PORT: {{ .Values.postgresql.port | quote }}
+  REDIS_HOST: {{ .Values.redis.host | quote }}
+  REDIS_PORT: {{ .Values.redis.port | quote }}
+  ELASTICSEARCH_HOST: {{ .Values.elasticsearch.host | quote }}
+  ELASTICSEARCH_PORT: {{ .Values.elasticsearch.port | quote }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: database-config
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    {{- include "padel-platform.labels" . | nindent 4 }}
+    app.kubernetes.io/component: database
+data:
+  auth_db_name: {{ .Values.postgresql.databases.auth | quote }}
+  user_db_name: {{ .Values.postgresql.databases.user | quote }}
+  booking_db_name: {{ .Values.postgresql.databases.booking | quote }}
+  notification_db_name: {{ .Values.postgresql.databases.notification | quote }}

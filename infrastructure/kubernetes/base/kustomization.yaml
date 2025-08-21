@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+metadata:
+  name: padel-platform-base
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secrets.yaml
+  - postgres-statefulset.yaml
+  - redis-deployment.yaml
+  - elasticsearch-statefulset.yaml
+  - auth-service.yaml
+  - user-service.yaml
+  - booking-service.yaml
+  - notification-service.yaml
+  - api-gateway.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: padel-platform
+  environment: development

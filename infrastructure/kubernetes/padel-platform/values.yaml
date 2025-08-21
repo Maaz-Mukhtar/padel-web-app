@@ -1,0 +1,199 @@
+# Default values for padel-platform
+# Pakistan's Premier Padel Booking Platform - Microservices Configuration
+
+# Global configuration
+global:
+  environment: development
+  domain: padelplatform.local
+
+# Namespace configuration
+namespace:
+  create: true
+  name: padel-platform-dev
+
+# Image configurations
+image:
+  registry: ghcr.io/maaz-mukhtar/padel-web-app
+  pullPolicy: IfNotPresent
+  tag: latest
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# JWT Configuration
+jwt:
+  secret: "padel_jwt_secret_key_dev_2024"
+
+# Services configuration
+services:
+  apiGateway:
+    enabled: true
+    name: api-gateway
+    port: 3000
+    replicaCount: 2
+    image:
+      repository: api-gateway
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+
+  auth:
+    enabled: true
+    name: auth-service
+    port: 3001
+    replicaCount: 2
+    image:
+      repository: auth-service
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+  user:
+    enabled: true
+    name: user-service
+    port: 3002
+    replicaCount: 2
+    image:
+      repository: user-service
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+  booking:
+    enabled: true
+    name: booking-service
+    port: 3003
+    replicaCount: 2
+    image:
+      repository: booking-service
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+  notification:
+    enabled: true
+    name: notification-service
+    port: 3004
+    replicaCount: 2
+    image:
+      repository: notification-service
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+# PostgreSQL configuration
+postgresql:
+  enabled: true
+  host: postgres-service
+  port: 5432
+  auth:
+    username: padel_user
+    password: padel_password_dev
+    database: padel_platform
+  databases:
+    auth: auth_db
+    user: user_db
+    booking: booking_db
+    notification: notification_db
+  persistence:
+    enabled: true
+    size: 10Gi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+# Redis configuration
+redis:
+  enabled: true
+  host: redis-service
+  port: 6379
+  auth:
+    password: redis_password_dev
+  persistence:
+    enabled: true
+    size: 1Gi
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Elasticsearch configuration
+elasticsearch:
+  enabled: true
+  host: elasticsearch-service
+  port: 9200
+  persistence:
+    enabled: true
+    size: 5Gi
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+  hosts:
+    - host: api-dev.padelplatform.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Service Account
+serviceAccount:
+  create: true
+  automount: true
+  annotations: {}
+  name: ""
+
+# Pod Security Context
+podSecurityContext: {}
+
+# Security Context
+securityContext: {}
+
+# Node Selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}

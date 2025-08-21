@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Counter, Histogram, Gauge, register, collectDefaultMetrics } from 'prom-client';
+import {
+  Counter,
+  Histogram,
+  Gauge,
+  register,
+  collectDefaultMetrics,
+} from 'prom-client';
 
 @Injectable()
 export class MetricsService {
@@ -39,41 +45,62 @@ export class MetricsService {
 
     // Business Metrics
     this.businessMetrics = new Map([
-      ['bookings_created', new Counter({
-        name: 'bookings_created_total',
-        help: 'Total number of bookings created',
-        labelNames: ['venue_id', 'status', 'service'],
-      })],
-      ['bookings_cancelled', new Counter({
-        name: 'bookings_cancelled_total',
-        help: 'Total number of bookings cancelled',
-        labelNames: ['venue_id', 'reason', 'service'],
-      })],
-      ['users_registered', new Counter({
-        name: 'users_registered_total',
-        help: 'Total number of users registered',
-        labelNames: ['role', 'provider', 'service'],
-      })],
-      ['auth_attempts', new Counter({
-        name: 'auth_attempts_total',
-        help: 'Total number of authentication attempts',
-        labelNames: ['result', 'method', 'service'],
-      })],
-      ['notifications_sent', new Counter({
-        name: 'notifications_sent_total',
-        help: 'Total number of notifications sent',
-        labelNames: ['type', 'status', 'service'],
-      })],
-      ['database_queries', new Counter({
-        name: 'database_queries_total',
-        help: 'Total number of database queries',
-        labelNames: ['operation', 'table', 'service'],
-      })],
-      ['cache_operations', new Counter({
-        name: 'cache_operations_total',
-        help: 'Total number of cache operations',
-        labelNames: ['operation', 'result', 'service'],
-      })],
+      [
+        'bookings_created',
+        new Counter({
+          name: 'bookings_created_total',
+          help: 'Total number of bookings created',
+          labelNames: ['venue_id', 'status', 'service'],
+        }),
+      ],
+      [
+        'bookings_cancelled',
+        new Counter({
+          name: 'bookings_cancelled_total',
+          help: 'Total number of bookings cancelled',
+          labelNames: ['venue_id', 'reason', 'service'],
+        }),
+      ],
+      [
+        'users_registered',
+        new Counter({
+          name: 'users_registered_total',
+          help: 'Total number of users registered',
+          labelNames: ['role', 'provider', 'service'],
+        }),
+      ],
+      [
+        'auth_attempts',
+        new Counter({
+          name: 'auth_attempts_total',
+          help: 'Total number of authentication attempts',
+          labelNames: ['result', 'method', 'service'],
+        }),
+      ],
+      [
+        'notifications_sent',
+        new Counter({
+          name: 'notifications_sent_total',
+          help: 'Total number of notifications sent',
+          labelNames: ['type', 'status', 'service'],
+        }),
+      ],
+      [
+        'database_queries',
+        new Counter({
+          name: 'database_queries_total',
+          help: 'Total number of database queries',
+          labelNames: ['operation', 'table', 'service'],
+        }),
+      ],
+      [
+        'cache_operations',
+        new Counter({
+          name: 'cache_operations_total',
+          help: 'Total number of cache operations',
+          labelNames: ['operation', 'result', 'service'],
+        }),
+      ],
     ]);
 
     // Register all metrics
@@ -142,50 +169,102 @@ export class MetricsService {
   /**
    * Record booking creation
    */
-  recordBookingCreated(venueId: string, status: string, serviceName: string = 'unknown') {
-    this.recordBusinessMetric('bookings_created', { venue_id: venueId, status }, serviceName);
+  recordBookingCreated(
+    venueId: string,
+    status: string,
+    serviceName: string = 'unknown'
+  ) {
+    this.recordBusinessMetric(
+      'bookings_created',
+      { venue_id: venueId, status },
+      serviceName
+    );
   }
 
   /**
    * Record booking cancellation
    */
-  recordBookingCancelled(venueId: string, reason: string, serviceName: string = 'unknown') {
-    this.recordBusinessMetric('bookings_cancelled', { venue_id: venueId, reason }, serviceName);
+  recordBookingCancelled(
+    venueId: string,
+    reason: string,
+    serviceName: string = 'unknown'
+  ) {
+    this.recordBusinessMetric(
+      'bookings_cancelled',
+      { venue_id: venueId, reason },
+      serviceName
+    );
   }
 
   /**
    * Record user registration
    */
-  recordUserRegistered(role: string, provider: string = 'local', serviceName: string = 'unknown') {
-    this.recordBusinessMetric('users_registered', { role, provider }, serviceName);
+  recordUserRegistered(
+    role: string,
+    provider: string = 'local',
+    serviceName: string = 'unknown'
+  ) {
+    this.recordBusinessMetric(
+      'users_registered',
+      { role, provider },
+      serviceName
+    );
   }
 
   /**
    * Record authentication attempt
    */
-  recordAuthAttempt(result: 'success' | 'failure', method: string = 'local', serviceName: string = 'unknown') {
+  recordAuthAttempt(
+    result: 'success' | 'failure',
+    method: string = 'local',
+    serviceName: string = 'unknown'
+  ) {
     this.recordBusinessMetric('auth_attempts', { result, method }, serviceName);
   }
 
   /**
    * Record notification sent
    */
-  recordNotificationSent(type: string, status: string, serviceName: string = 'unknown') {
-    this.recordBusinessMetric('notifications_sent', { type, status }, serviceName);
+  recordNotificationSent(
+    type: string,
+    status: string,
+    serviceName: string = 'unknown'
+  ) {
+    this.recordBusinessMetric(
+      'notifications_sent',
+      { type, status },
+      serviceName
+    );
   }
 
   /**
    * Record database query
    */
-  recordDatabaseQuery(operation: string, table: string, serviceName: string = 'unknown') {
-    this.recordBusinessMetric('database_queries', { operation, table }, serviceName);
+  recordDatabaseQuery(
+    operation: string,
+    table: string,
+    serviceName: string = 'unknown'
+  ) {
+    this.recordBusinessMetric(
+      'database_queries',
+      { operation, table },
+      serviceName
+    );
   }
 
   /**
    * Record cache operation
    */
-  recordCacheOperation(operation: 'get' | 'set' | 'del', result: 'hit' | 'miss' | 'success' | 'error', serviceName: string = 'unknown') {
-    this.recordBusinessMetric('cache_operations', { operation, result }, serviceName);
+  recordCacheOperation(
+    operation: 'get' | 'set' | 'del',
+    result: 'hit' | 'miss' | 'success' | 'error',
+    serviceName: string = 'unknown'
+  ) {
+    this.recordBusinessMetric(
+      'cache_operations',
+      { operation, result },
+      serviceName
+    );
   }
 
   /**
@@ -213,19 +292,22 @@ export class MetricsService {
 /**
  * Middleware for Express/NestJS to automatically record HTTP metrics
  */
-export function createMetricsMiddleware(metricsService: MetricsService, serviceName: string) {
+export function createMetricsMiddleware(
+  metricsService: MetricsService,
+  serviceName: string
+) {
   return (req: any, res: any, next: any) => {
     const startTime = Date.now();
-    
+
     // Increment active connections
     metricsService.incrementActiveConnections(serviceName);
 
     // Override res.end to capture response time
     const originalEnd = res.end;
-    res.end = function(...args: any[]) {
+    res.end = function (...args: any[]) {
       const duration = (Date.now() - startTime) / 1000;
       const route = req.route?.path || req.path || 'unknown';
-      
+
       metricsService.recordHttpRequest(
         req.method,
         route,
@@ -233,10 +315,10 @@ export function createMetricsMiddleware(metricsService: MetricsService, serviceN
         duration,
         serviceName
       );
-      
+
       // Decrement active connections
       metricsService.decrementActiveConnections(serviceName);
-      
+
       originalEnd.apply(this, args);
     };
 

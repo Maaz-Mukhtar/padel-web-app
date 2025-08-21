@@ -1,4 +1,10 @@
-import { register, Counter, Histogram, Gauge, collectDefaultMetrics } from 'prom-client';
+import {
+  register,
+  Counter,
+  Histogram,
+  Gauge,
+  collectDefaultMetrics,
+} from 'prom-client';
 
 // Initialize default metrics collection
 collectDefaultMetrics({
@@ -60,22 +66,22 @@ export const metricsService = {
 
   getMetrics: async (): Promise<string> => {
     return register.metrics();
-  }
+  },
 };
 
 export function createMetricsMiddleware(serviceName: string) {
   return (req: any, res: any, next: any) => {
     const startTime = Date.now();
-    
+
     // Increment active connections
     metricsService.incrementActiveConnections(serviceName);
 
     // Override res.end to capture response time
     const originalEnd = res.end;
-    res.end = function(...args: any[]) {
+    res.end = function (...args: any[]) {
       const duration = (Date.now() - startTime) / 1000;
       const route = req.route?.path || req.path || 'unknown';
-      
+
       metricsService.recordHttpRequest(
         req.method,
         route,
@@ -83,10 +89,10 @@ export function createMetricsMiddleware(serviceName: string) {
         duration,
         serviceName
       );
-      
+
       // Decrement active connections
       metricsService.decrementActiveConnections(serviceName);
-      
+
       originalEnd.apply(this, args);
     };
 

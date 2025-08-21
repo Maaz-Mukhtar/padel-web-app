@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: 'node',
   projects: [
     '<rootDir>/services/*/jest.config.js',
-    '<rootDir>/shared/*/jest.config.js'
+    '<rootDir>/shared/*/jest.config.js',
   ],
   collectCoverageFrom: [
     'services/*/src/**/*.ts',
@@ -14,7 +14,7 @@ module.exports = {
     '!**/main.ts',
     '!**/index.ts',
     '!**/*.spec.ts',
-    '!**/*.test.ts'
+    '!**/*.test.ts',
   ],
   coverageDirectory: '<rootDir>/coverage',
   coverageReporters: ['text', 'lcov', 'html'],
@@ -23,18 +23,11 @@ module.exports = {
       branches: 80,
       functions: 80,
       lines: 80,
-      statements: 80
-    }
+      statements: 80,
+    },
   },
-  testMatch: [
-    '**/__tests__/**/*.ts',
-    '**/?(*.)+(spec|test).ts'
-  ],
-  testPathIgnorePatterns: [
-    '/node_modules/',
-    '/dist/',
-    '/coverage/'
-  ],
+  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+  testPathIgnorePatterns: ['/node_modules/', '/dist/', '/coverage/'],
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
-  verbose: true
+  verbose: true,
 };

@@ -3,9 +3,11 @@
 ## 🚀 Development Overview
 
 ### Methodology: Vertical Slicing Approach
+
 The development follows a **vertical slicing methodology** where each phase delivers complete, end-to-end functionality that provides immediate value to users. This approach ensures continuous delivery of working software while maintaining architectural integrity.
 
 ### Phase Structure
+
 - **4 Main Phases** over 14 weeks
 - **Weekly Sprints** with defined deliverables
 - **Continuous Integration/Deployment** pipeline
@@ -14,17 +16,22 @@ The development follows a **vertical slicing methodology** where each phase deli
 ---
 
 ## 📅 Phase 1: Foundation (Weeks 1-4)
+
 **Objective**: Establish core infrastructure and basic booking functionality
 
 ### Week 1: Project Setup & Infrastructure
+
 **[@week-01-implementation.md](./week-01-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Development environment setup
 - CI/CD pipeline establishment
 - Core microservices scaffolding
 - Database schema implementation
 
 #### Key Deliverables
+
 - [x] **Development Environment**
   - Docker containerization setup
   - Kubernetes cluster configuration
@@ -50,6 +57,7 @@ The development follows a **vertical slicing methodology** where each phase deli
   - Staging environment deployment
 
 #### Technical Tasks
+
 ```typescript
 // Example: Auth service basic structure
 @Module({
@@ -69,20 +77,25 @@ export class AuthModule {}
 ```
 
 #### Success Criteria
+
 - ✅ All services start without errors
 - ✅ Database connections established
 - ✅ Basic API endpoints respond with 200 status
 - ✅ CI/CD pipeline deploys to staging successfully
 
 ### Week 2: Authentication Implementation & User Profiles
+
 **[@week-02-implementation.md](./week-02-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Complete authentication service implementation
 - User profile management features
 - Basic notification system setup
 - Security implementation
 
 #### Key Deliverables
+
 - [x] **Authentication Service**
   - User registration with email verification
   - Login/logout functionality with JWT tokens
@@ -103,6 +116,7 @@ export class AuthModule {}
   - Basic analytics dashboard
 
 #### Database Implementation
+
 ```sql
 -- Authentication tables
 CREATE TABLE users (
@@ -131,6 +145,7 @@ CREATE TABLE user_profiles (
 ```
 
 #### API Endpoints
+
 ```typescript
 // Authentication endpoints
 @Post('/auth/register')
@@ -158,6 +173,7 @@ async updateProfile(@User() user: UserEntity, @Body() profileDto: UpdateProfileD
 ```
 
 #### Success Criteria
+
 - ✅ Users can register and login successfully
 - ✅ Venue owners can create venue profiles
 - ✅ Admin can approve/reject venues
@@ -165,14 +181,18 @@ async updateProfile(@User() user: UserEntity, @Body() profileDto: UpdateProfileD
 - ✅ Integration tests pass for all endpoints
 
 ### Week 3: Core Booking System
+
 **[@week-03-implementation.md](./week-03-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Implement basic booking functionality
 - Court availability management
 - Booking lifecycle management
 - Real-time availability updates
 
 #### Key Deliverables
+
 - [x] **Booking System Core**
   - Court availability checking
   - Booking creation and confirmation
@@ -192,6 +212,7 @@ async updateProfile(@User() user: UserEntity, @Body() profileDto: UpdateProfileD
   - No-show handling
 
 #### Booking State Machine
+
 ```typescript
 enum BookingStatus {
   PENDING = 'pending',
@@ -199,17 +220,21 @@ enum BookingStatus {
   IN_PROGRESS = 'in_progress',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
-  NO_SHOW = 'no_show'
+  NO_SHOW = 'no_show',
 }
 
 class BookingStateMachine {
   private transitions = {
     [BookingStatus.PENDING]: [BookingStatus.CONFIRMED, BookingStatus.CANCELLED],
-    [BookingStatus.CONFIRMED]: [BookingStatus.IN_PROGRESS, BookingStatus.CANCELLED, BookingStatus.NO_SHOW],
+    [BookingStatus.CONFIRMED]: [
+      BookingStatus.IN_PROGRESS,
+      BookingStatus.CANCELLED,
+      BookingStatus.NO_SHOW,
+    ],
     [BookingStatus.IN_PROGRESS]: [BookingStatus.COMPLETED],
     [BookingStatus.COMPLETED]: [],
     [BookingStatus.CANCELLED]: [],
-    [BookingStatus.NO_SHOW]: []
+    [BookingStatus.NO_SHOW]: [],
   };
 
   canTransition(from: BookingStatus, to: BookingStatus): boolean {
@@ -219,6 +244,7 @@ class BookingStateMachine {
 ```
 
 #### Database Schema
+
 ```sql
 -- Booking management tables
 CREATE TABLE bookings (
@@ -247,6 +273,7 @@ CREATE TABLE availability_slots (
 ```
 
 #### Success Criteria
+
 - ✅ Users can check court availability in real-time
 - ✅ Booking creation prevents double-booking
 - ✅ Booking lifecycle states work correctly
@@ -254,14 +281,18 @@ CREATE TABLE availability_slots (
 - ✅ Performance tests show <200ms response time
 
 ### Week 4: Payment Integration & Testing
+
 **[@week-04-implementation.md](./week-04-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Integrate primary payment gateway (Stripe)
 - Implement payment processing workflow
 - Comprehensive testing suite
 - Phase 1 deployment preparation
 
 #### Key Deliverables
+
 - [x] **Payment Gateway Integration**
   - Stripe payment processing
   - Secure payment flow implementation
@@ -287,6 +318,7 @@ CREATE TABLE availability_slots (
   - Documentation completion
 
 #### Payment Flow Implementation
+
 ```typescript
 // Payment processing service
 @Injectable()
@@ -300,7 +332,7 @@ export class PaymentService {
       metadata: {
         bookingId: booking.id,
         venueId: booking.venueId,
-        userId: booking.userId
+        userId: booking.userId,
       },
       automatic_payment_methods: {
         enabled: true,
@@ -311,14 +343,15 @@ export class PaymentService {
       bookingId: booking.id,
       paymentIntentId: paymentIntent.id,
       amount: booking.totalAmount,
-      status: 'pending'
+      status: 'pending',
     });
 
     return paymentIntent;
   }
 
   async handlePaymentSuccess(paymentIntentId: string): Promise<void> {
-    const transaction = await this.getTransactionByPaymentIntent(paymentIntentId);
+    const transaction =
+      await this.getTransactionByPaymentIntent(paymentIntentId);
     await this.updateTransactionStatus(transaction.id, 'completed');
     await this.confirmBooking(transaction.bookingId);
     await this.sendConfirmationNotification(transaction.bookingId);
@@ -327,40 +360,41 @@ export class PaymentService {
 ```
 
 #### Testing Strategy
+
 ```typescript
 // Example integration test
 describe('Booking Flow Integration', () => {
   it('should complete full booking flow', async () => {
     // 1. User registration
     const user = await testUtils.createUser();
-    
+
     // 2. Venue and court setup
     const venue = await testUtils.createVenue();
     const court = await testUtils.createCourt(venue.id);
-    
+
     // 3. Check availability
     const availability = await bookingService.checkAvailability({
       courtId: court.id,
       date: '2024-03-15',
       startTime: '10:00',
-      endTime: '11:00'
+      endTime: '11:00',
     });
     expect(availability.isAvailable).toBe(true);
-    
+
     // 4. Create booking
     const booking = await bookingService.createBooking({
       userId: user.id,
       courtId: court.id,
       date: '2024-03-15',
       startTime: '10:00',
-      endTime: '11:00'
+      endTime: '11:00',
     });
     expect(booking.status).toBe('pending');
-    
+
     // 5. Process payment
     const paymentIntent = await paymentService.createPaymentIntent(booking);
     await paymentService.handlePaymentSuccess(paymentIntent.id);
-    
+
     // 6. Verify booking confirmation
     const confirmedBooking = await bookingService.getBooking(booking.id);
     expect(confirmedBooking.status).toBe('confirmed');
@@ -369,6 +403,7 @@ describe('Booking Flow Integration', () => {
 ```
 
 #### Success Criteria
+
 - ✅ Payment processing works end-to-end
 - ✅ All tests pass with 90%+ code coverage
 - ✅ Performance benchmarks met
@@ -378,17 +413,22 @@ describe('Booking Flow Integration', () => {
 ---
 
 ## 📅 Phase 2: Enhancement (Weeks 5-8)
+
 **Objective**: Add advanced features and improve user experience
 
 ### Week 5: Local Payment Gateways & Mobile Optimization
+
 **[@week-05-implementation.md](./week-05-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Integrate Pakistani payment methods
 - Mobile-responsive design implementation
 - Performance optimization
 - User experience improvements
 
 #### Key Deliverables
+
 - [x] **Local Payment Integration**
   - EasyPaisa payment gateway
   - JazzCash payment gateway
@@ -408,57 +448,67 @@ describe('Booking Flow Integration', () => {
   - Image optimization and lazy loading
 
 #### Local Payment Integration
+
 ```typescript
 // Pakistani payment gateways
 @Injectable()
 export class LocalPaymentService {
-  async processEasyPaisaPayment(paymentData: EasyPaisaPaymentDto): Promise<PaymentResult> {
+  async processEasyPaisaPayment(
+    paymentData: EasyPaisaPaymentDto
+  ): Promise<PaymentResult> {
     const response = await this.easyPaisaApi.initiatePayment({
       amount: paymentData.amount,
       customerMobile: paymentData.phoneNumber,
       merchantId: this.configService.get('EASYPAYSA_MERCHANT_ID'),
-      transactionId: paymentData.transactionId
+      transactionId: paymentData.transactionId,
     });
 
     return {
       success: response.status === 'SUCCESS',
       transactionId: response.transactionId,
-      gatewayResponse: response
+      gatewayResponse: response,
     };
   }
 
-  async processJazzCashPayment(paymentData: JazzCashPaymentDto): Promise<PaymentResult> {
+  async processJazzCashPayment(
+    paymentData: JazzCashPaymentDto
+  ): Promise<PaymentResult> {
     const response = await this.jazzCashApi.processPayment({
       amount: paymentData.amount,
       customerMobile: paymentData.phoneNumber,
       merchantId: this.configService.get('JAZZCASH_MERCHANT_ID'),
-      transactionRef: paymentData.transactionRef
+      transactionRef: paymentData.transactionRef,
     });
 
     return {
       success: response.resultCode === '000',
       transactionId: response.transactionId,
-      gatewayResponse: response
+      gatewayResponse: response,
     };
   }
 }
 ```
 
 #### Success Criteria
+
 - ✅ Local payment methods work seamlessly
 - ✅ Mobile experience matches desktop functionality
 - ✅ Page load times improved by 50%
 - ✅ PWA installation works on mobile devices
 
 ### Week 6: Social Features & User Experience
+
 **[@week-06-implementation.md](./week-06-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Implement social booking features
 - User profile enhancements
 - Friend connections and groups
 - Social interaction capabilities
 
 #### Key Deliverables
+
 - [x] **Social Booking Features**
   - Group booking creation
   - Friend invitation system
@@ -478,12 +528,13 @@ export class LocalPaymentService {
   - Activity feed and notifications
 
 #### Social Features Implementation
+
 ```typescript
 // Social booking service
 @Injectable()
 export class SocialBookingService {
   async createGroupBooking(
-    organizerId: string, 
+    organizerId: string,
     bookingData: CreateGroupBookingDto
   ): Promise<GroupBooking> {
     const groupBooking = await this.groupBookingRepository.create({
@@ -494,7 +545,7 @@ export class SocialBookingService {
       startTime: bookingData.startTime,
       endTime: bookingData.endTime,
       maxParticipants: bookingData.maxParticipants,
-      splitType: bookingData.splitType // 'equal' | 'organizer_pays' | 'custom'
+      splitType: bookingData.splitType, // 'equal' | 'organizer_pays' | 'custom'
     });
 
     // Send invitations to friends
@@ -505,9 +556,12 @@ export class SocialBookingService {
     return groupBooking;
   }
 
-  async joinGroupBooking(bookingId: string, userId: string): Promise<BookingParticipant> {
+  async joinGroupBooking(
+    bookingId: string,
+    userId: string
+  ): Promise<BookingParticipant> {
     const groupBooking = await this.getGroupBooking(bookingId);
-    
+
     if (groupBooking.participants.length >= groupBooking.maxParticipants) {
       throw new BadRequestException('Booking is full');
     }
@@ -516,13 +570,14 @@ export class SocialBookingService {
       bookingId,
       userId,
       status: 'confirmed',
-      joinedAt: new Date()
+      joinedAt: new Date(),
     });
   }
 }
 ```
 
 #### Database Schema Extensions
+
 ```sql
 -- Social features tables
 CREATE TABLE friendships (
@@ -559,20 +614,25 @@ CREATE TABLE group_bookings (
 ```
 
 #### Success Criteria
+
 - ✅ Users can create and join group bookings
 - ✅ Friend invitation system works smoothly
 - ✅ Social features increase user engagement by 30%
 - ✅ Group coordination reduces booking abandonment
 
 ### Week 7: Notification System & Communication
+
 **[@week-07-implementation.md](./week-07-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Multi-channel notification system
 - Real-time communication features
 - Email and SMS integration
 - WhatsApp Business API integration
 
 #### Key Deliverables
+
 - [x] **Multi-Channel Notifications**
   - Email notification system
   - SMS notifications via local providers
@@ -592,6 +652,7 @@ CREATE TABLE group_bookings (
   - Notification history and tracking
 
 #### Notification Service Implementation
+
 ```typescript
 // Multi-channel notification service
 @Injectable()
@@ -606,7 +667,7 @@ export class NotificationService {
   async sendBookingConfirmation(booking: Booking): Promise<void> {
     const user = await this.userService.findById(booking.userId);
     const venue = await this.venueService.findById(booking.venueId);
-    
+
     const message = {
       type: 'booking_confirmation',
       data: {
@@ -614,34 +675,40 @@ export class NotificationService {
         venueName: venue.name,
         date: booking.date,
         time: `${booking.startTime} - ${booking.endTime}`,
-        amount: booking.totalAmount
-      }
+        amount: booking.totalAmount,
+      },
     };
 
     // Send via preferred channels based on user preferences
     const promises = [];
-    
+
     if (user.preferences.emailNotifications) {
-      promises.push(this.emailService.send({
-        to: user.email,
-        template: 'booking-confirmation',
-        data: message.data
-      }));
+      promises.push(
+        this.emailService.send({
+          to: user.email,
+          template: 'booking-confirmation',
+          data: message.data,
+        })
+      );
     }
 
     if (user.preferences.smsNotifications) {
-      promises.push(this.smsService.send({
-        to: user.phone,
-        message: this.generateSmsMessage(message)
-      }));
+      promises.push(
+        this.smsService.send({
+          to: user.phone,
+          message: this.generateSmsMessage(message),
+        })
+      );
     }
 
     if (user.preferences.whatsappNotifications) {
-      promises.push(this.whatsappService.send({
-        to: user.phone,
-        template: 'booking_confirmation',
-        parameters: message.data
-      }));
+      promises.push(
+        this.whatsappService.send({
+          to: user.phone,
+          template: 'booking_confirmation',
+          parameters: message.data,
+        })
+      );
     }
 
     await Promise.all(promises);
@@ -650,6 +717,7 @@ export class NotificationService {
 ```
 
 #### WhatsApp Business Integration
+
 ```typescript
 // WhatsApp Business API service
 @Injectable()
@@ -659,13 +727,13 @@ export class WhatsappService {
   constructor() {
     this.whatsappApi = new WhatsAppBusinessApi({
       accessToken: process.env.WHATSAPP_ACCESS_TOKEN,
-      phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID
+      phoneNumberId: process.env.WHATSAPP_PHONE_NUMBER_ID,
     });
   }
 
   async sendTemplateMessage(
-    to: string, 
-    template: string, 
+    to: string,
+    template: string,
     parameters: any[]
   ): Promise<void> {
     await this.whatsappApi.sendMessage({
@@ -677,30 +745,38 @@ export class WhatsappService {
         components: [
           {
             type: 'body',
-            parameters: parameters.map(param => ({ type: 'text', text: param }))
-          }
-        ]
-      }
+            parameters: parameters.map(param => ({
+              type: 'text',
+              text: param,
+            })),
+          },
+        ],
+      },
     });
   }
 }
 ```
 
 #### Success Criteria
+
 - ✅ Multi-channel notifications deliver within 30 seconds
 - ✅ WhatsApp integration works with Pakistani numbers
 - ✅ Real-time updates work across all clients
 - ✅ Notification delivery rate >95%
 
 ### Week 8: Advanced Booking Features
+
 **[@week-08-implementation.md](./week-08-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Recurring booking functionality
 - Advanced search and filtering
 - Booking modification capabilities
 - Cancellation and refund policies
 
 #### Key Deliverables
+
 - [x] **Recurring Bookings**
   - Weekly/monthly recurring patterns
   - Flexible scheduling options
@@ -720,6 +796,7 @@ export class WhatsappService {
   - Automatic rebooking
 
 #### Recurring Booking Implementation
+
 ```typescript
 // Recurring booking service
 @Injectable()
@@ -738,12 +815,12 @@ export class RecurringBookingService {
       endTime: recurringData.endTime,
       frequency: recurringData.frequency, // 'weekly' | 'biweekly' | 'monthly'
       daysOfWeek: recurringData.daysOfWeek, // [1, 3, 5] for Mon, Wed, Fri
-      isActive: true
+      isActive: true,
     });
 
     // Generate individual bookings
     await this.generateBookingsFromRecurring(recurringBooking);
-    
+
     return recurringBooking;
   }
 
@@ -761,7 +838,7 @@ export class RecurringBookingService {
           courtId: recurring.courtId,
           date: currentDate.toISOString().split('T')[0],
           startTime: recurring.startTime,
-          endTime: recurring.endTime
+          endTime: recurring.endTime,
         });
 
         if (isAvailable) {
@@ -772,7 +849,7 @@ export class RecurringBookingService {
             date: currentDate.toISOString().split('T')[0],
             startTime: recurring.startTime,
             endTime: recurring.endTime,
-            recurringBookingId: recurring.id
+            recurringBookingId: recurring.id,
           });
           bookings.push(booking);
         }
@@ -788,6 +865,7 @@ export class RecurringBookingService {
 ```
 
 #### Advanced Search Implementation
+
 ```typescript
 // Advanced search service with Elasticsearch
 @Injectable()
@@ -798,8 +876,8 @@ export class VenueSearchService {
     const query = {
       bool: {
         must: [],
-        filter: []
-      }
+        filter: [],
+      },
     };
 
     // Location-based search
@@ -809,9 +887,9 @@ export class VenueSearchService {
           distance: `${searchParams.radius || 10}km`,
           location: {
             lat: searchParams.latitude,
-            lon: searchParams.longitude
-          }
-        }
+            lon: searchParams.longitude,
+          },
+        },
       });
     }
 
@@ -829,19 +907,37 @@ export class VenueSearchService {
                     query: {
                       bool: {
                         must: [
-                          { term: { 'courts.availability.date': searchParams.date } },
-                          { range: { 'courts.availability.start_time': { lte: searchParams.startTime } } },
-                          { range: { 'courts.availability.end_time': { gte: searchParams.endTime } } },
-                          { term: { 'courts.availability.is_available': true } }
-                        ]
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
+                          {
+                            term: {
+                              'courts.availability.date': searchParams.date,
+                            },
+                          },
+                          {
+                            range: {
+                              'courts.availability.start_time': {
+                                lte: searchParams.startTime,
+                              },
+                            },
+                          },
+                          {
+                            range: {
+                              'courts.availability.end_time': {
+                                gte: searchParams.endTime,
+                              },
+                            },
+                          },
+                          {
+                            term: { 'courts.availability.is_available': true },
+                          },
+                        ],
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        },
       });
     }
 
@@ -850,21 +946,21 @@ export class VenueSearchService {
       const priceFilter: any = {};
       if (searchParams.minPrice) priceFilter.gte = searchParams.minPrice;
       if (searchParams.maxPrice) priceFilter.lte = searchParams.maxPrice;
-      
+
       query.bool.filter.push({
         nested: {
           path: 'courts',
           query: {
-            range: { 'courts.price': priceFilter }
-          }
-        }
+            range: { 'courts.price': priceFilter },
+          },
+        },
       });
     }
 
     // Amenities filter
     if (searchParams.amenities?.length > 0) {
       query.bool.filter.push({
-        terms: { 'amenities': searchParams.amenities }
+        terms: { amenities: searchParams.amenities },
       });
     }
 
@@ -875,30 +971,33 @@ export class VenueSearchService {
         sort: [
           { _score: { order: 'desc' } },
           { rating: { order: 'desc' } },
-          { _geo_distance: {
-            location: {
-              lat: searchParams.latitude,
-              lon: searchParams.longitude
+          {
+            _geo_distance: {
+              location: {
+                lat: searchParams.latitude,
+                lon: searchParams.longitude,
+              },
+              order: 'asc',
+              unit: 'km',
             },
-            order: 'asc',
-            unit: 'km'
-          }}
+          },
         ],
         size: searchParams.limit || 20,
-        from: searchParams.offset || 0
-      }
+        from: searchParams.offset || 0,
+      },
     });
 
     return {
       venues: searchResult.body.hits.hits.map(hit => hit._source),
       total: searchResult.body.hits.total.value,
-      aggregations: searchResult.body.aggregations
+      aggregations: searchResult.body.aggregations,
     };
   }
 }
 ```
 
 #### Success Criteria
+
 - ✅ Recurring bookings work with 99% accuracy
 - ✅ Search results return within 100ms
 - ✅ Booking modifications work seamlessly
@@ -907,17 +1006,22 @@ export class VenueSearchService {
 ---
 
 ## 📅 Phase 3: Scale (Weeks 9-12)
+
 **Objective**: Advanced features, tournament management, and performance optimization
 
 ### Week 9: Tournament Management System
+
 **[@week-09-implementation.md](./week-09-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Complete tournament management platform
 - Tournament registration and bracket management
 - Scoring and results tracking
 - Tournament discovery and promotion
 
 #### Key Deliverables
+
 - [x] **Tournament Creation & Management**
   - Tournament setup with various formats
   - Registration management
@@ -937,6 +1041,7 @@ export class VenueSearchService {
   - Tournament analytics and reporting
 
 #### Tournament Service Implementation
+
 ```typescript
 // Tournament management service
 @Injectable()
@@ -958,12 +1063,12 @@ export class TournamentService {
       registration_end: tournamentData.registrationEnd,
       tournament_start: tournamentData.tournamentStart,
       tournament_end: tournamentData.tournamentEnd,
-      status: 'draft'
+      status: 'draft',
     });
 
     // Create bracket structure based on format
     await this.createTournamentBracket(tournament);
-    
+
     return tournament;
   }
 
@@ -973,16 +1078,16 @@ export class TournamentService {
     partnerId?: string
   ): Promise<TournamentRegistration> {
     const tournament = await this.getTournament(tournamentId);
-    
+
     // Validate registration eligibility
     await this.validateRegistrationEligibility(tournament, userId);
-    
+
     const registration = await this.tournamentRegistrationRepository.create({
       tournament_id: tournamentId,
       user_id: userId,
       partner_id: partnerId,
       status: 'pending',
-      registered_at: new Date()
+      registered_at: new Date(),
     });
 
     // Process entry fee payment if required
@@ -990,7 +1095,7 @@ export class TournamentService {
       await this.paymentService.createTournamentPayment({
         registrationId: registration.id,
         amount: tournament.entryFee,
-        description: `Tournament entry fee - ${tournament.name}`
+        description: `Tournament entry fee - ${tournament.name}`,
       });
     }
 
@@ -1000,9 +1105,9 @@ export class TournamentService {
   async generateBracket(tournamentId: string): Promise<TournamentBracket> {
     const tournament = await this.getTournament(tournamentId);
     const registrations = await this.getConfirmedRegistrations(tournamentId);
-    
+
     let bracket: TournamentBracket;
-    
+
     switch (tournament.format) {
       case 'single_elimination':
         bracket = await this.generateSingleEliminationBracket(registrations);
@@ -1024,6 +1129,7 @@ export class TournamentService {
 ```
 
 #### Tournament Database Schema
+
 ```sql
 -- Tournament management tables
 CREATE TABLE tournaments (
@@ -1071,20 +1177,25 @@ CREATE TABLE tournament_matches (
 ```
 
 #### Success Criteria
+
 - ✅ Tournament creation and management works end-to-end
 - ✅ Bracket generation handles all tournament formats
 - ✅ Registration and payment flow is seamless
 - ✅ Live scoring updates work in real-time
 
 ### Week 10: Analytics & Business Intelligence
+
 **[@week-10-implementation.md](./week-10-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Advanced analytics dashboard
 - Business intelligence reporting
 - User behavior tracking
 - Performance metrics and KPI monitoring
 
 #### Key Deliverables
+
 - [x] **Analytics Dashboard**
   - Real-time business metrics
   - User engagement analytics
@@ -1104,6 +1215,7 @@ CREATE TABLE tournament_matches (
   - Capacity planning insights
 
 #### Analytics Service Implementation
+
 ```typescript
 // Analytics and business intelligence service
 @Injectable()
@@ -1120,12 +1232,12 @@ export class AnalyticsService {
       session_id: event.sessionId,
       user_id: event.userId,
       ip_address: event.ipAddress,
-      user_agent: event.userAgent
+      user_agent: event.userAgent,
     };
 
     // Store in ClickHouse for analytics
     await this.clickhouseService.insert('events', eventData);
-    
+
     // Update real-time counters in Redis
     await this.updateRealTimeMetrics(event);
   }
@@ -1140,16 +1252,11 @@ export class AnalyticsService {
       this.getRevenue(startDate, endDate, filters),
       this.getActiveUsers(startDate, endDate, filters),
       this.getTopVenues(startDate, endDate, filters),
-      this.getConversionRates(startDate, endDate, filters)
+      this.getConversionRates(startDate, endDate, filters),
     ];
 
-    const [
-      totalBookings,
-      revenue,
-      activeUsers,
-      topVenues,
-      conversionRates
-    ] = await Promise.all(queries);
+    const [totalBookings, revenue, activeUsers, topVenues, conversionRates] =
+      await Promise.all(queries);
 
     return {
       totalBookings,
@@ -1157,12 +1264,15 @@ export class AnalyticsService {
       activeUsers,
       topVenues,
       conversionRates,
-      generatedAt: new Date()
+      generatedAt: new Date(),
     };
   }
 
-  async getUserBehaviorAnalytics(userId: string): Promise<UserBehaviorAnalytics> {
-    const userEvents = await this.clickhouseService.query(`
+  async getUserBehaviorAnalytics(
+    userId: string
+  ): Promise<UserBehaviorAnalytics> {
+    const userEvents = await this.clickhouseService.query(
+      `
       SELECT 
         event_type,
         COUNT(*) as count,
@@ -1173,7 +1283,9 @@ export class AnalyticsService {
         AND timestamp >= today() - INTERVAL 30 DAY
       GROUP BY event_type, date
       ORDER BY date DESC
-    `, { userId });
+    `,
+      { userId }
+    );
 
     const bookingHistory = await this.getBookingHistory(userId);
     const preferences = await this.calculateUserPreferences(userId);
@@ -1182,12 +1294,13 @@ export class AnalyticsService {
       events: userEvents,
       bookingHistory,
       preferences,
-      recommendations: await this.generateRecommendations(userId)
+      recommendations: await this.generateRecommendations(userId),
     };
   }
 
   async getVenuePerformanceMetrics(venueId: string): Promise<VenueMetrics> {
-    const metrics = await this.clickhouseService.query(`
+    const metrics = await this.clickhouseService.query(
+      `
       SELECT 
         toStartOfDay(b.created_at) as date,
         COUNT(*) as total_bookings,
@@ -1202,34 +1315,39 @@ export class AnalyticsService {
         AND b.created_at >= today() - INTERVAL 90 DAY
       GROUP BY date
       ORDER BY date DESC
-    `, { venueId });
+    `,
+      { venueId }
+    );
 
     return {
       dailyMetrics: metrics,
       occupancyRate: await this.calculateOccupancyRate(venueId),
       revenueGrowth: await this.calculateRevenueGrowth(venueId),
-      customerRetention: await this.calculateCustomerRetention(venueId)
+      customerRetention: await this.calculateCustomerRetention(venueId),
     };
   }
 }
 ```
 
 #### Real-Time Analytics Dashboard
+
 ```typescript
 // Real-time dashboard with WebSocket updates
 @WebSocketGateway({ cors: true })
-export class AnalyticsDashboardGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class AnalyticsDashboardGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer() server: Server;
-  
+
   private connectedAdmins = new Set<string>();
 
   async handleConnection(client: Socket) {
     const token = client.handshake.auth.token;
     const user = await this.authService.validateToken(token);
-    
+
     if (user.role === 'admin' || user.role === 'venue_owner') {
       this.connectedAdmins.add(client.id);
-      
+
       // Send initial dashboard data
       const dashboardData = await this.analyticsService.getRealTimeDashboard();
       client.emit('dashboard-data', dashboardData);
@@ -1246,27 +1364,34 @@ export class AnalyticsDashboardGateway implements OnGatewayConnection, OnGateway
 
   @SubscribeMessage('get-venue-metrics')
   async handleVenueMetrics(client: Socket, data: { venueId: string }) {
-    const metrics = await this.analyticsService.getVenuePerformanceMetrics(data.venueId);
+    const metrics = await this.analyticsService.getVenuePerformanceMetrics(
+      data.venueId
+    );
     client.emit('venue-metrics', metrics);
   }
 }
 ```
 
 #### Success Criteria
+
 - ✅ Analytics dashboard loads within 2 seconds
 - ✅ Real-time metrics update every 30 seconds
 - ✅ Business intelligence reports generate correctly
 - ✅ Performance monitoring catches issues proactively
 
 ### Week 11: Performance Optimization & Scalability
+
 **[@week-11-implementation.md](./week-11-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Database optimization and indexing
 - Caching strategy implementation
 - Load testing and performance tuning
 - Auto-scaling and infrastructure optimization
 
 #### Key Deliverables
+
 - [x] **Database Optimization**
   - Query optimization and indexing
   - Database partitioning for large tables
@@ -1286,44 +1411,46 @@ export class AnalyticsDashboardGateway implements OnGatewayConnection, OnGateway
   - Database query optimization
 
 #### Database Optimization
+
 ```sql
 -- Performance optimization indexes
-CREATE INDEX CONCURRENTLY idx_bookings_user_date 
-ON bookings(user_id, booking_date) 
+CREATE INDEX CONCURRENTLY idx_bookings_user_date
+ON bookings(user_id, booking_date)
 WHERE status IN ('confirmed', 'completed');
 
-CREATE INDEX CONCURRENTLY idx_bookings_venue_date_time 
-ON bookings(venue_id, booking_date, start_time) 
+CREATE INDEX CONCURRENTLY idx_bookings_venue_date_time
+ON bookings(venue_id, booking_date, start_time)
 WHERE status != 'cancelled';
 
-CREATE INDEX CONCURRENTLY idx_availability_court_date 
-ON availability_slots(court_id, date, start_time) 
+CREATE INDEX CONCURRENTLY idx_availability_court_date
+ON availability_slots(court_id, date, start_time)
 WHERE is_available = true;
 
 -- Partitioning for large tables
-CREATE TABLE bookings_2024 PARTITION OF bookings 
+CREATE TABLE bookings_2024 PARTITION OF bookings
 FOR VALUES FROM ('2024-01-01') TO ('2025-01-01');
 
-CREATE TABLE bookings_2025 PARTITION OF bookings 
+CREATE TABLE bookings_2025 PARTITION OF bookings
 FOR VALUES FROM ('2025-01-01') TO ('2026-01-01');
 
 -- Materialized views for analytics
 CREATE MATERIALIZED VIEW venue_daily_stats AS
-SELECT 
+SELECT
     venue_id,
     DATE(created_at) as date,
     COUNT(*) as total_bookings,
     SUM(total_amount) as daily_revenue,
     COUNT(DISTINCT user_id) as unique_customers
-FROM bookings 
+FROM bookings
 WHERE status = 'completed'
 GROUP BY venue_id, DATE(created_at);
 
-CREATE UNIQUE INDEX idx_venue_daily_stats 
+CREATE UNIQUE INDEX idx_venue_daily_stats
 ON venue_daily_stats(venue_id, date);
 ```
 
 #### Advanced Caching Implementation
+
 ```typescript
 // Multi-level caching service
 @Injectable()
@@ -1332,7 +1459,7 @@ export class CacheService {
   private readonly TTL = {
     SHORT: 300, // 5 minutes
     MEDIUM: 1800, // 30 minutes
-    LONG: 3600 // 1 hour
+    LONG: 3600, // 1 hour
   };
 
   constructor(
@@ -1354,7 +1481,7 @@ export class CacheService {
       // Populate L1 cache
       this.appCache.set(key, {
         value,
-        expiry: Date.now() + this.TTL.SHORT * 1000
+        expiry: Date.now() + this.TTL.SHORT * 1000,
       });
       return value as T;
     }
@@ -1362,11 +1489,15 @@ export class CacheService {
     return null;
   }
 
-  async set<T>(key: string, value: T, ttl: number = this.TTL.MEDIUM): Promise<void> {
+  async set<T>(
+    key: string,
+    value: T,
+    ttl: number = this.TTL.MEDIUM
+  ): Promise<void> {
     // Set in both L1 and L2 cache
     this.appCache.set(key, {
       value,
-      expiry: Date.now() + Math.min(ttl, this.TTL.SHORT) * 1000
+      expiry: Date.now() + Math.min(ttl, this.TTL.SHORT) * 1000,
     });
 
     await this.redisService.setex(key, ttl, JSON.stringify(value));
@@ -1390,17 +1521,21 @@ export class CacheService {
 
 // Cache decorators for service methods
 export function Cached(ttl: number = 1800) {
-  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: any,
+    propertyName: string,
+    descriptor: PropertyDescriptor
+  ) {
     const method = descriptor.value;
     descriptor.value = async function (...args: any[]) {
       const cacheKey = `${target.constructor.name}:${propertyName}:${JSON.stringify(args)}`;
-      
+
       let result = await this.cacheService.get(cacheKey);
       if (result === null) {
         result = await method.apply(this, args);
         await this.cacheService.set(cacheKey, result, ttl);
       }
-      
+
       return result;
     };
   };
@@ -1408,6 +1543,7 @@ export function Cached(ttl: number = 1800) {
 ```
 
 #### Load Testing Configuration
+
 ```typescript
 // Artillery.js load testing configuration
 export const loadTestConfig = {
@@ -1421,21 +1557,44 @@ export const loadTestConfig = {
     ],
     defaults: {
       headers: {
-        'Content-Type': 'application/json'
-      }
-    }
+        'Content-Type': 'application/json',
+      },
+    },
   },
   scenarios: [
     {
       name: 'User Registration and Booking Flow',
       weight: 40,
       flow: [
-        { post: { url: '/auth/register', json: { email: '{{ $randomEmail() }}', password: 'password123' } } },
-        { post: { url: '/auth/login', json: { email: '{{ email }}', password: 'password123' } } },
+        {
+          post: {
+            url: '/auth/register',
+            json: { email: '{{ $randomEmail() }}', password: 'password123' },
+          },
+        },
+        {
+          post: {
+            url: '/auth/login',
+            json: { email: '{{ email }}', password: 'password123' },
+          },
+        },
         { get: { url: '/venues?city=karachi' } },
-        { get: { url: '/venues/{{ $randomVenueId() }}/availability?date={{ $today() }}' } },
-        { post: { url: '/bookings', json: { venueId: '{{ venueId }}', date: '{{ $today() }}', startTime: '10:00' } } }
-      ]
+        {
+          get: {
+            url: '/venues/{{ $randomVenueId() }}/availability?date={{ $today() }}',
+          },
+        },
+        {
+          post: {
+            url: '/bookings',
+            json: {
+              venueId: '{{ venueId }}',
+              date: '{{ $today() }}',
+              startTime: '10:00',
+            },
+          },
+        },
+      ],
     },
     {
       name: 'Search and Browse',
@@ -1443,10 +1602,10 @@ export const loadTestConfig = {
       flow: [
         { get: { url: '/venues?city=karachi&limit=20' } },
         { get: { url: '/venues/{{ $randomVenueId() }}' } },
-        { get: { url: '/venues/search?q=padel&location=karachi' } }
-      ]
-    }
-  ]
+        { get: { url: '/venues/search?q=padel&location=karachi' } },
+      ],
+    },
+  ],
 };
 
 // Performance monitoring
@@ -1454,41 +1613,46 @@ export const loadTestConfig = {
 export class PerformanceMonitoringService {
   async monitorApiPerformance(req: Request, res: Response, next: NextFunction) {
     const start = Date.now();
-    
+
     res.on('finish', () => {
       const duration = Date.now() - start;
       const endpoint = `${req.method} ${req.route?.path || req.path}`;
-      
+
       // Log slow requests
       if (duration > 1000) {
         this.logger.warn(`Slow request: ${endpoint} took ${duration}ms`);
       }
-      
+
       // Update metrics
       this.metricsService.recordApiDuration(endpoint, duration);
       this.metricsService.recordApiCall(endpoint, res.statusCode);
     });
-    
+
     next();
   }
 }
 ```
 
 #### Success Criteria
+
 - ✅ API response times <200ms for 95th percentile
 - ✅ Database queries optimized to <50ms
 - ✅ Cache hit rate >80% for frequently accessed data
 - ✅ System handles 1000+ concurrent users
 
 ### Week 12: Security & Compliance
+
 **[@week-12-implementation.md](./week-12-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Comprehensive security audit
 - Data protection and privacy compliance
 - Security monitoring and incident response
 - Penetration testing and vulnerability assessment
 
 #### Key Deliverables
+
 - [x] **Security Hardening**
   - API security best practices
   - Input validation and sanitization
@@ -1508,6 +1672,7 @@ export class PerformanceMonitoringService {
   - Security alerting system
 
 #### Security Implementation
+
 ```typescript
 // Security middleware and guards
 @Injectable()
@@ -1529,10 +1694,10 @@ export class SecurityService {
 
     // Input validation
     await this.validateInput(req.body);
-    
+
     // Security headers check
     this.validateSecurityHeaders(req);
-    
+
     return true;
   }
 
@@ -1544,9 +1709,13 @@ export class SecurityService {
     }
 
     // SQL injection prevention (already handled by ORM, but extra check)
-    const sqlInjectionPattern = /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)/gi;
+    const sqlInjectionPattern =
+      /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)/gi;
     if (sqlInjectionPattern.test(JSON.stringify(data))) {
-      this.logger.warn('Potential SQL injection attempt detected', { data, ip: 'context.ip' });
+      this.logger.warn('Potential SQL injection attempt detected', {
+        data,
+        ip: 'context.ip',
+      });
       throw new BadRequestException('Invalid input detected');
     }
   }
@@ -1559,11 +1728,11 @@ export class SecurityService {
       ipAddress: event.ipAddress,
       userAgent: event.userAgent,
       timestamp: new Date(),
-      details: event.details
+      details: event.details,
     };
 
     await this.securityLogRepository.create(securityLog);
-    
+
     // Alert for high severity events
     if (event.severity === 'HIGH') {
       await this.alertingService.sendSecurityAlert(securityLog);
@@ -1575,45 +1744,53 @@ export class SecurityService {
 @Injectable()
 export class EncryptionService {
   private readonly algorithm = 'aes-256-gcm';
-  private readonly secretKey = crypto.scryptSync(process.env.ENCRYPTION_KEY, 'salt', 32);
+  private readonly secretKey = crypto.scryptSync(
+    process.env.ENCRYPTION_KEY,
+    'salt',
+    32
+  );
 
   encrypt(text: string): string {
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipher(this.algorithm, this.secretKey);
     cipher.setAAD(Buffer.from('additional-data'));
-    
+
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    
+
     const authTag = cipher.getAuthTag();
-    
+
     return `${iv.toString('hex')}:${authTag.toString('hex')}:${encrypted}`;
   }
 
   decrypt(encryptedText: string): string {
     const [ivHex, authTagHex, encrypted] = encryptedText.split(':');
-    
+
     const iv = Buffer.from(ivHex, 'hex');
     const authTag = Buffer.from(authTagHex, 'hex');
-    
+
     const decipher = crypto.createDecipher(this.algorithm, this.secretKey);
     decipher.setAAD(Buffer.from('additional-data'));
     decipher.setAuthTag(authTag);
-    
+
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-    
+
     return decrypted;
   }
 }
 ```
 
 #### GDPR Compliance Implementation
+
 ```typescript
 // GDPR compliance service
 @Injectable()
 export class GdprComplianceService {
-  async handleDataDeletionRequest(userId: string, reason: string): Promise<void> {
+  async handleDataDeletionRequest(
+    userId: string,
+    reason: string
+  ): Promise<void> {
     const user = await this.userService.findById(userId);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -1624,12 +1801,12 @@ export class GdprComplianceService {
       action: 'DATA_DELETION_REQUEST',
       userId,
       reason,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
 
     // Anonymize user data instead of hard deletion to maintain referential integrity
     await this.anonymizeUserData(userId);
-    
+
     // Mark user as deleted
     await this.userRepository.update(userId, {
       email: `deleted_${userId}@example.com`,
@@ -1637,7 +1814,7 @@ export class GdprComplianceService {
       lastName: 'USER',
       phone: null,
       isDeleted: true,
-      deletedAt: new Date()
+      deletedAt: new Date(),
     });
 
     // Clean up related data
@@ -1657,18 +1834,18 @@ export class GdprComplianceService {
         firstName: user.firstName,
         lastName: user.lastName,
         phone: user.phone,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
       },
       bookingHistory: bookings,
       paymentHistory: payments.map(p => ({
         id: p.id,
         amount: p.amount,
         date: p.createdAt,
-        status: p.status
+        status: p.status,
       })),
       reviews: reviews,
       generatedAt: new Date(),
-      format: 'JSON'
+      format: 'JSON',
     };
   }
 
@@ -1679,7 +1856,7 @@ export class GdprComplianceService {
       firstName: 'Anonymous',
       lastName: 'User',
       phone: null,
-      profilePictureUrl: null
+      profilePictureUrl: null,
     };
 
     await this.userRepository.update(userId, anonymizedData);
@@ -1688,6 +1865,7 @@ export class GdprComplianceService {
 ```
 
 #### Success Criteria
+
 - ✅ Security audit passes with no critical vulnerabilities
 - ✅ GDPR compliance verified
 - ✅ Penetration testing results acceptable
@@ -1696,17 +1874,22 @@ export class GdprComplianceService {
 ---
 
 ## 📅 Phase 4: Launch (Weeks 13-14)
+
 **Objective**: Production deployment, monitoring, and go-to-market execution
 
 ### Week 13: Production Deployment & Monitoring
+
 **[@week-13-implementation.md](./week-13-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Production environment finalization
 - Monitoring and alerting system setup
 - Performance optimization
 - Security hardening
 
 #### Key Deliverables
+
 - [x] **Production Infrastructure**
   - Production Kubernetes cluster setup
   - Load balancer and CDN configuration
@@ -1726,6 +1909,7 @@ export class GdprComplianceService {
   - Compliance verification
 
 #### Production Deployment Configuration
+
 ```yaml
 # Production Kubernetes configuration
 apiVersion: v1
@@ -1745,35 +1929,35 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/rate-limit: "100"
-    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    nginx.ingress.kubernetes.io/rate-limit: '100'
+    nginx.ingress.kubernetes.io/rate-limit-window: '1m'
 spec:
   tls:
-  - hosts:
-    - api.padelplatform.pk
-    - app.padelplatform.pk
-    secretName: padel-tls
+    - hosts:
+        - api.padelplatform.pk
+        - app.padelplatform.pk
+      secretName: padel-tls
   rules:
-  - host: api.padelplatform.pk
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: api-gateway
-            port:
-              number: 80
-  - host: app.padelplatform.pk
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
+    - host: api.padelplatform.pk
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway
+                port:
+                  number: 80
+    - host: app.padelplatform.pk
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
 
 ---
 # Production database configuration
@@ -1785,60 +1969,61 @@ metadata:
 spec:
   instances: 3
   primaryUpdateStrategy: unsupervised
-  
+
   postgresql:
     parameters:
-      max_connections: "200"
-      shared_buffers: "256MB"
-      effective_cache_size: "1GB"
-      maintenance_work_mem: "64MB"
-      checkpoint_completion_target: "0.9"
-      wal_buffers: "16MB"
-      default_statistics_target: "100"
-  
+      max_connections: '200'
+      shared_buffers: '256MB'
+      effective_cache_size: '1GB'
+      maintenance_work_mem: '64MB'
+      checkpoint_completion_target: '0.9'
+      wal_buffers: '16MB'
+      default_statistics_target: '100'
+
   bootstrap:
     initdb:
       database: padel_platform
       owner: padel_user
       secret:
         name: postgres-credentials
-  
+
   storage:
     size: 100Gi
     storageClass: fast-ssd
 ```
 
 #### Monitoring Setup
+
 ```typescript
 // Comprehensive monitoring service
 @Injectable()
 export class MonitoringService {
   private readonly prometheus = new Prometheus.Registry();
-  
+
   // Custom metrics
   private readonly httpRequestDuration = new Prometheus.Histogram({
     name: 'http_request_duration_seconds',
     help: 'Duration of HTTP requests in seconds',
     labelNames: ['method', 'route', 'status_code'],
-    buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10]
+    buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10],
   });
 
   private readonly businessMetrics = {
     totalBookings: new Prometheus.Counter({
       name: 'total_bookings',
       help: 'Total number of bookings created',
-      labelNames: ['venue_id', 'status']
+      labelNames: ['venue_id', 'status'],
     }),
     revenue: new Prometheus.Counter({
       name: 'total_revenue',
       help: 'Total revenue generated',
-      labelNames: ['currency']
+      labelNames: ['currency'],
     }),
     activeUsers: new Prometheus.Gauge({
       name: 'active_users',
       help: 'Number of active users',
-      labelNames: ['time_period']
-    })
+      labelNames: ['time_period'],
+    }),
   };
 
   constructor() {
@@ -1848,7 +2033,12 @@ export class MonitoringService {
     });
   }
 
-  recordHttpRequest(method: string, route: string, statusCode: number, duration: number) {
+  recordHttpRequest(
+    method: string,
+    route: string,
+    statusCode: number,
+    duration: number
+  ) {
     this.httpRequestDuration
       .labels(method, route, statusCode.toString())
       .observe(duration);
@@ -1882,11 +2072,11 @@ export class HealthCheckService {
       this.checkDatabase(),
       this.checkRedis(),
       this.checkPaymentGateways(),
-      this.checkExternalServices()
+      this.checkExternalServices(),
     ]);
 
-    const healthy = checks.every(check => 
-      check.status === 'fulfilled' && check.value === true
+    const healthy = checks.every(
+      check => check.status === 'fulfilled' && check.value === true
     );
 
     return {
@@ -1896,8 +2086,8 @@ export class HealthCheckService {
         database: checks[0].status === 'fulfilled' ? checks[0].value : false,
         redis: checks[1].status === 'fulfilled' ? checks[1].value : false,
         payments: checks[2].status === 'fulfilled' ? checks[2].value : false,
-        external: checks[3].status === 'fulfilled' ? checks[3].value : false
-      }
+        external: checks[3].status === 'fulfilled' ? checks[3].value : false,
+      },
     };
   }
 
@@ -1914,20 +2104,25 @@ export class HealthCheckService {
 ```
 
 #### Success Criteria
+
 - ✅ Production deployment successful with zero downtime
 - ✅ Monitoring captures all critical metrics
 - ✅ Alerting system responds within 2 minutes
 - ✅ Security hardening verified
 
 ### Week 14: Go-to-Market & Launch
+
 **[@week-14-implementation.md](./week-14-implementation.md)** - Detailed implementation guide
+
 #### Sprint Goals
+
 - Mobile app deployment
 - Marketing website launch
 - User onboarding optimization
 - Launch campaign execution
 
 #### Key Deliverables
+
 - [x] **Mobile App Launch**
   - iOS App Store submission and approval
   - Google Play Store submission and approval
@@ -1947,6 +2142,7 @@ export class HealthCheckService {
   - Feedback collection mechanism
 
 #### Mobile App Deployment
+
 ```typescript
 // React Native app configuration
 export const AppConfig = {
@@ -1957,15 +2153,15 @@ export const AppConfig = {
     googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY,
     analyticsEnabled: true,
     crashReportingEnabled: true,
-    logLevel: 'error'
+    logLevel: 'error',
   },
-  
+
   features: {
     pushNotifications: true,
     biometricAuth: true,
     socialLogin: true,
     offlineMode: true,
-    darkMode: true
+    darkMode: true,
   },
 
   app: {
@@ -1973,9 +2169,9 @@ export const AppConfig = {
     buildNumber: 1,
     minimumOsVersion: {
       ios: '13.0',
-      android: '21'
-    }
-  }
+      android: '21',
+    },
+  },
 };
 
 // Push notification service
@@ -1999,31 +2195,36 @@ export class PushNotificationService {
         title: 'Booking Reminder',
         body: `Your padel session at ${booking.venue.name} starts in 1 hour`,
         icon: 'ic_notification',
-        sound: 'default'
+        sound: 'default',
       },
       data: {
         type: 'booking_reminder',
         bookingId: booking.id,
-        venueId: booking.venueId
-      }
+        venueId: booking.venueId,
+      },
     };
 
     await this.fcm.send(message);
   }
 
-  async registerFcmToken(userId: string, token: string, platform: 'ios' | 'android'): Promise<void> {
+  async registerFcmToken(
+    userId: string,
+    token: string,
+    platform: 'ios' | 'android'
+  ): Promise<void> {
     await this.fcmTokenRepository.upsert({
       userId,
       token,
       platform,
       isActive: true,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     });
   }
 }
 ```
 
 #### Marketing Website Implementation
+
 ```typescript
 // Next.js marketing website
 export default function LandingPage() {
@@ -2037,7 +2238,7 @@ export default function LandingPage() {
               Pakistan's Premier Padel Booking Platform
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600">
-              Discover, book, and play at the best padel courts across Pakistan. 
+              Discover, book, and play at the best padel courts across Pakistan.
               Join thousands of players in the fastest-growing racquet sport.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
@@ -2054,13 +2255,13 @@ export default function LandingPage() {
 
       {/* Features Section */}
       <FeatureSection />
-      
+
       {/* Venues Section */}
       <VenuesShowcase />
-      
+
       {/* Testimonials */}
       <TestimonialsSection />
-      
+
       {/* CTA Section */}
       <CTASection />
     </div>
@@ -2084,6 +2285,7 @@ export async function getStaticProps() {
 ```
 
 #### Launch Campaign Strategy
+
 ```typescript
 // Launch campaign tracking
 @Injectable()
@@ -2093,7 +2295,7 @@ export class LaunchCampaignService {
       this.getRegistrationStats(),
       this.getBookingStats(),
       this.getAppDownloads(),
-      this.getMarketingMetrics()
+      this.getMarketingMetrics(),
     ]);
 
     return {
@@ -2102,27 +2304,27 @@ export class LaunchCampaignService {
       totalBookings: metrics[1].total,
       appDownloads: {
         ios: metrics[2].ios,
-        android: metrics[2].android
+        android: metrics[2].android,
       },
       marketingMetrics: metrics[3],
       conversionRate: this.calculateConversionRate(metrics[0], metrics[1]),
-      generatedAt: new Date()
+      generatedAt: new Date(),
     };
   }
 
   async executeLaunchSequence(): Promise<void> {
     // Day 1: Soft launch to friends and family
     await this.sendInvitations('friends_family');
-    
+
     // Day 3: Beta user group invitation
     await this.sendInvitations('beta_users');
-    
+
     // Day 7: Public launch announcement
     await this.publishLaunchAnnouncement();
-    
+
     // Day 10: Press release and media outreach
     await this.sendPressRelease();
-    
+
     // Day 14: Influencer and partnership outreach
     await this.activatePartnerships();
   }
@@ -2130,6 +2332,7 @@ export class LaunchCampaignService {
 ```
 
 #### Success Criteria
+
 - ✅ Mobile apps approved and live on both stores
 - ✅ Marketing website launching with good SEO scores
 - ✅ 100+ initial user registrations within first week
@@ -2141,12 +2344,14 @@ export class LaunchCampaignService {
 ## 🎯 Summary & Success Metrics
 
 ### Overall Timeline Achievement
+
 - **Week 1-4**: Foundation established with core booking functionality
 - **Week 5-8**: Enhanced features and user experience improvements
 - **Week 9-12**: Advanced features and performance optimization
 - **Week 13-14**: Production launch and go-to-market execution
 
 ### Key Performance Indicators (KPIs)
+
 1. **Technical KPIs**
    - System uptime: >99.9%
    - API response time: <200ms (95th percentile)
@@ -2166,10 +2371,11 @@ export class LaunchCampaignService {
    - Support ticket resolution: <24 hours
 
 ### Risk Mitigation Strategies
+
 1. **Technical Risks**: Comprehensive testing, gradual rollout, monitoring
 2. **Business Risks**: Market validation, flexible pricing, strong partnerships
 3. **Operational Risks**: Automated processes, thorough documentation, team training
 
 ---
 
-*This development timeline provides a comprehensive roadmap for building Pakistan's premier padel booking platform, with clear milestones, deliverables, and success criteria for each phase of the 14-week implementation.*
+_This development timeline provides a comprehensive roadmap for building Pakistan's premier padel booking platform, with clear milestones, deliverables, and success criteria for each phase of the 14-week implementation._

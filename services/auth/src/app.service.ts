@@ -6,7 +6,8 @@ export class AppService {
     return {
       service: 'Authentication Service',
       version: '1.0.0',
-      description: 'User authentication and authorization for Padel Platform Pakistan',
+      description:
+        'User authentication and authorization for Padel Platform Pakistan',
       port: process.env.AUTH_SERVICE_PORT || 3001,
       environment: process.env.NODE_ENV || 'development',
       timestamp: new Date().toISOString(),

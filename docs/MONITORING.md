@@ -52,13 +52,13 @@ The Padel Platform uses a comprehensive monitoring strategy based on the three p
 
 ### Core Components
 
-| Component | Purpose | Port | Access |
-|-----------|---------|------|--------|
-| **Prometheus** | Metrics collection and storage | 9090 | `kubectl port-forward svc/prometheus 9090:9090` |
-| **Grafana** | Metrics visualization and dashboards | 3000 | `kubectl port-forward svc/grafana 3000:80` |
-| **Elasticsearch** | Log storage and indexing | 9200 | `kubectl port-forward svc/elasticsearch 9200:9200` |
-| **Kibana** | Log analysis and visualization | 5601 | `kubectl port-forward svc/kibana 5601:5601` |
-| **Fluentd** | Log collection and forwarding | - | DaemonSet on all nodes |
+| Component         | Purpose                              | Port | Access                                             |
+| ----------------- | ------------------------------------ | ---- | -------------------------------------------------- |
+| **Prometheus**    | Metrics collection and storage       | 9090 | `kubectl port-forward svc/prometheus 9090:9090`    |
+| **Grafana**       | Metrics visualization and dashboards | 3000 | `kubectl port-forward svc/grafana 3000:80`         |
+| **Elasticsearch** | Log storage and indexing             | 9200 | `kubectl port-forward svc/elasticsearch 9200:9200` |
+| **Kibana**        | Log analysis and visualization       | 5601 | `kubectl port-forward svc/kibana 5601:5601`        |
+| **Fluentd**       | Log collection and forwarding        | -    | DaemonSet on all nodes                             |
 
 ### Access Credentials
 
@@ -135,9 +135,9 @@ Services automatically discovered via Kubernetes annotations:
 # Service annotation for Prometheus scraping
 metadata:
   annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "3001"
-    prometheus.io/path: "/metrics"
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '3001'
+    prometheus.io/path: '/metrics'
 ```
 
 ## Logging
@@ -166,12 +166,12 @@ All services use structured JSON logging:
 
 ### Log Levels
 
-| Level | Usage | Example |
-|-------|-------|---------|
-| **ERROR** | System errors, exceptions | Database connection failures |
-| **WARN** | Recoverable issues, degraded performance | High response times, retry attempts |
-| **INFO** | Important business events | User registration, booking creation |
-| **DEBUG** | Detailed execution information | Function entry/exit, variable values |
+| Level     | Usage                                    | Example                              |
+| --------- | ---------------------------------------- | ------------------------------------ |
+| **ERROR** | System errors, exceptions                | Database connection failures         |
+| **WARN**  | Recoverable issues, degraded performance | High response times, retry attempts  |
+| **INFO**  | Important business events                | User registration, booking creation  |
+| **DEBUG** | Detailed execution information           | Function entry/exit, variable values |
 
 ### Log Collection Flow
 
@@ -195,10 +195,10 @@ user-service: {"correlationId": "req-20231201-123456-789", "message": "Profile r
 ### Log Retention
 
 | Environment | Retention Period | Storage Size |
-|-------------|------------------|--------------|
-| Development | 7 days | 10 GB |
-| Staging | 30 days | 100 GB |
-| Production | 90 days | 1 TB |
+| ----------- | ---------------- | ------------ |
+| Development | 7 days           | 10 GB        |
+| Staging     | 30 days          | 100 GB       |
+| Production  | 90 days          | 1 TB         |
 
 ## Dashboards
 
@@ -209,6 +209,7 @@ user-service: {"correlationId": "req-20231201-123456-789", "message": "Profile r
 **URL**: `http://localhost:3000/d/padel-overview`
 
 **Panels**:
+
 - Service health status
 - Request rate and error rate
 - Response time percentiles
@@ -219,6 +220,7 @@ user-service: {"correlationId": "req-20231201-123456-789", "message": "Profile r
 **URL**: `http://localhost:3000/d/service-details`
 
 **Panels**:
+
 - Per-service metrics
 - Database connection pools
 - Cache hit rates
@@ -229,6 +231,7 @@ user-service: {"correlationId": "req-20231201-123456-789", "message": "Profile r
 **URL**: `http://localhost:3000/d/business-metrics`
 
 **Panels**:
+
 - User registrations
 - Booking conversion rates
 - Revenue metrics
@@ -239,6 +242,7 @@ user-service: {"correlationId": "req-20231201-123456-789", "message": "Profile r
 **URL**: `http://localhost:3000/d/infrastructure`
 
 **Panels**:
+
 - Kubernetes cluster health
 - Node resource usage
 - Pod status and restarts
@@ -251,6 +255,7 @@ user-service: {"correlationId": "req-20231201-123456-789", "message": "Profile r
 **Index Pattern**: `fluentd-*`
 
 **Visualizations**:
+
 - Log volume over time
 - Error rate by service
 - Top error messages
@@ -259,6 +264,7 @@ user-service: {"correlationId": "req-20231201-123456-789", "message": "Profile r
 #### 2. Performance Analysis
 
 **Filters**:
+
 - Slow queries (> 1 second)
 - High memory usage alerts
 - Error patterns
@@ -276,7 +282,7 @@ Key alerts configured in Grafana:
   labels:
     severity: warning
   annotations:
-    summary: "High error rate detected on {{ $labels.service }}"
+    summary: 'High error rate detected on {{ $labels.service }}'
 
 # High response time alert
 - alert: HighResponseTime
@@ -285,7 +291,7 @@ Key alerts configured in Grafana:
   labels:
     severity: warning
   annotations:
-    summary: "95th percentile response time > 500ms on {{ $labels.service }}"
+    summary: '95th percentile response time > 500ms on {{ $labels.service }}'
 ```
 
 ## Alerting
@@ -302,7 +308,7 @@ Key alerts configured in Grafana:
   labels:
     severity: critical
   annotations:
-    summary: "Service {{ $labels.instance }} is down"
+    summary: 'Service {{ $labels.instance }} is down'
 
 # Database down
 - alert: DatabaseDown
@@ -311,7 +317,7 @@ Key alerts configured in Grafana:
   labels:
     severity: critical
   annotations:
-    summary: "PostgreSQL database is down"
+    summary: 'PostgreSQL database is down'
 
 # High error rate
 - alert: HighErrorRate
@@ -320,7 +326,7 @@ Key alerts configured in Grafana:
   labels:
     severity: critical
   annotations:
-    summary: "Error rate > 10% on {{ $labels.service }}"
+    summary: 'Error rate > 10% on {{ $labels.service }}'
 ```
 
 #### Warning Alerts (Monitor Closely)
@@ -333,7 +339,7 @@ Key alerts configured in Grafana:
   labels:
     severity: warning
   annotations:
-    summary: "Memory usage > 80% on {{ $labels.pod }}"
+    summary: 'Memory usage > 80% on {{ $labels.pod }}'
 
 # High CPU usage
 - alert: HighCPUUsage
@@ -342,7 +348,7 @@ Key alerts configured in Grafana:
   labels:
     severity: warning
   annotations:
-    summary: "CPU usage > 80% on {{ $labels.pod }}"
+    summary: 'CPU usage > 80% on {{ $labels.pod }}'
 ```
 
 ### Alert Channels
@@ -353,10 +359,10 @@ Key alerts configured in Grafana:
 # Slack integration
 - name: 'dev-alerts'
   slack_configs:
-  - api_url: 'YOUR_SLACK_WEBHOOK_URL'
-    channel: '#dev-alerts'
-    title: 'Padel Platform Alert'
-    text: '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+    - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+      channel: '#dev-alerts'
+      title: 'Padel Platform Alert'
+      text: '{{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
 ```
 
 #### Production Environment
@@ -365,22 +371,22 @@ Key alerts configured in Grafana:
 # Multiple channels
 - name: 'prod-alerts'
   email_configs:
-  - to: 'ops-team@padelplatform.pk'
-    subject: 'URGENT: {{ .GroupLabels.alertname }}'
+    - to: 'ops-team@padelplatform.pk'
+      subject: 'URGENT: {{ .GroupLabels.alertname }}'
   slack_configs:
-  - api_url: 'YOUR_SLACK_WEBHOOK_URL'
-    channel: '#production-alerts'
+    - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+      channel: '#production-alerts'
   pagerduty_configs:
-  - routing_key: 'YOUR_PAGERDUTY_KEY'
+    - routing_key: 'YOUR_PAGERDUTY_KEY'
 ```
 
 ### Alert Escalation
 
-| Severity | Response Time | Escalation |
-|----------|---------------|------------|
-| **Critical** | 5 minutes | Immediate → Team Lead → Manager |
-| **Warning** | 30 minutes | Developer → Team Lead |
-| **Info** | Best effort | Log only |
+| Severity     | Response Time | Escalation                      |
+| ------------ | ------------- | ------------------------------- |
+| **Critical** | 5 minutes     | Immediate → Team Lead → Manager |
+| **Warning**  | 30 minutes    | Developer → Team Lead           |
+| **Info**     | Best effort   | Log only                        |
 
 ## Health Checks
 
@@ -399,7 +405,7 @@ Response: {
   "status": "healthy",
   "checks": {
     "database": "healthy",
-    "redis": "healthy", 
+    "redis": "healthy",
     "external_api": "degraded"
   },
   "dependencies": {...}
@@ -468,7 +474,7 @@ open http://localhost:5601    # Kibana
 # Access via secure tunnels only
 
 # Grafana: https://grafana.padelplatform.pk
-# Kibana: https://kibana.padelplatform.pk  
+# Kibana: https://kibana.padelplatform.pk
 # Prometheus: Internal access only
 ```
 
@@ -478,22 +484,22 @@ open http://localhost:5601    # Kibana
 
 #### Technical KPIs
 
-| Metric | Target | Alert Threshold |
-|--------|--------|-----------------|
-| **Response Time (P95)** | < 200ms | > 500ms |
-| **Error Rate** | < 0.1% | > 1% |
-| **Availability** | > 99.9% | < 99% |
-| **CPU Usage** | < 70% | > 80% |
-| **Memory Usage** | < 80% | > 90% |
+| Metric                  | Target  | Alert Threshold |
+| ----------------------- | ------- | --------------- |
+| **Response Time (P95)** | < 200ms | > 500ms         |
+| **Error Rate**          | < 0.1%  | > 1%            |
+| **Availability**        | > 99.9% | < 99%           |
+| **CPU Usage**           | < 70%   | > 80%           |
+| **Memory Usage**        | < 80%   | > 90%           |
 
 #### Business KPIs
 
-| Metric | Target | Tracking |
-|--------|--------|----------|
-| **User Registration Rate** | +10% monthly | Daily |
-| **Booking Conversion** | > 15% | Weekly |
-| **User Retention (7-day)** | > 40% | Weekly |
-| **API Usage Growth** | +20% monthly | Daily |
+| Metric                     | Target       | Tracking |
+| -------------------------- | ------------ | -------- |
+| **User Registration Rate** | +10% monthly | Daily    |
+| **Booking Conversion**     | > 15%        | Weekly   |
+| **User Retention (7-day)** | > 40%        | Weekly   |
+| **API Usage Growth**       | +20% monthly | Daily    |
 
 ### Performance Dashboards
 

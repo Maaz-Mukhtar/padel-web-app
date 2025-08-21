@@ -25,19 +25,22 @@ export class CustomLogger implements LoggerService {
   private serviceName: string;
   private context: string;
 
-  constructor(serviceName: string = 'unknown', context: string = 'Application') {
+  constructor(
+    serviceName: string = 'unknown',
+    context: string = 'Application'
+  ) {
     this.serviceName = serviceName;
     this.context = context;
-    
+
     this.logger = winston.createLogger({
       level: process.env.LOG_LEVEL || 'info',
       format: winston.format.combine(
         winston.format.timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss.SSS'
+          format: 'YYYY-MM-DD HH:mm:ss.SSS',
         }),
         winston.format.errors({ stack: true }),
         winston.format.json(),
-        winston.format.printf((info) => {
+        winston.format.printf(info => {
           const logObject = {
             timestamp: info.timestamp,
             level: info.level.toUpperCase(),
@@ -66,11 +69,13 @@ export class CustomLogger implements LoggerService {
           format: winston.format.combine(
             winston.format.colorize(),
             winston.format.timestamp({
-              format: 'HH:mm:ss.SSS'
+              format: 'HH:mm:ss.SSS',
             }),
-            winston.format.printf((info) => {
+            winston.format.printf(info => {
               const contextStr = this.context ? `[${this.context}] ` : '';
-              const correlationStr = info.correlationId ? `[${info.correlationId}] ` : '';
+              const correlationStr = info.correlationId
+                ? `[${info.correlationId}] `
+                : '';
               return `${info.timestamp} ${info.level} ${contextStr}${correlationStr}${info.message}`;
             })
           ),
@@ -80,20 +85,24 @@ export class CustomLogger implements LoggerService {
 
     // Add file transport for production
     if (process.env.NODE_ENV === 'production') {
-      this.logger.add(new winston.transports.File({
-        filename: '/var/log/app/error.log',
-        level: 'error',
-        maxsize: 50 * 1024 * 1024, // 50MB
-        maxFiles: 5,
-        tailable: true,
-      }));
+      this.logger.add(
+        new winston.transports.File({
+          filename: '/var/log/app/error.log',
+          level: 'error',
+          maxsize: 50 * 1024 * 1024, // 50MB
+          maxFiles: 5,
+          tailable: true,
+        })
+      );
 
-      this.logger.add(new winston.transports.File({
-        filename: '/var/log/app/combined.log',
-        maxsize: 50 * 1024 * 1024, // 50MB
-        maxFiles: 10,
-        tailable: true,
-      }));
+      this.logger.add(
+        new winston.transports.File({
+          filename: '/var/log/app/combined.log',
+          maxsize: 50 * 1024 * 1024, // 50MB
+          maxFiles: 10,
+          tailable: true,
+        })
+      );
     }
   }
 
@@ -101,9 +110,14 @@ export class CustomLogger implements LoggerService {
     this.logWithLevel('info', message, context, metadata);
   }
 
-  error(message: string, trace?: string | Error, context?: string | LogContext, metadata?: LogContext) {
+  error(
+    message: string,
+    trace?: string | Error,
+    context?: string | LogContext,
+    metadata?: LogContext
+  ) {
     const errorMetadata = this.prepareMetadata(context, metadata);
-    
+
     if (trace instanceof Error) {
       errorMetadata.error = {
         name: trace.name,
@@ -125,16 +139,28 @@ export class CustomLogger implements LoggerService {
     this.logWithLevel('debug', message, context, metadata);
   }
 
-  verbose(message: string, context?: string | LogContext, metadata?: LogContext) {
+  verbose(
+    message: string,
+    context?: string | LogContext,
+    metadata?: LogContext
+  ) {
     this.logWithLevel('verbose', message, context, metadata);
   }
 
-  private logWithLevel(level: string, message: string, context?: string | LogContext, metadata?: LogContext) {
+  private logWithLevel(
+    level: string,
+    message: string,
+    context?: string | LogContext,
+    metadata?: LogContext
+  ) {
     const logMetadata = this.prepareMetadata(context, metadata);
     this.logger.log(level, message, { metadata: logMetadata });
   }
 
-  private prepareMetadata(context?: string | LogContext, metadata?: LogContext): LogContext {
+  private prepareMetadata(
+    context?: string | LogContext,
+    metadata?: LogContext
+  ): LogContext {
     let logMetadata: LogContext = {};
 
     if (typeof context === 'string') {
@@ -171,7 +197,12 @@ export class CustomLogger implements LoggerService {
   /**
    * Log HTTP response
    */
-  logResponse(req: Request, statusCode: number, duration: number, metadata?: LogContext) {
+  logResponse(
+    req: Request,
+    statusCode: number,
+    duration: number,
+    metadata?: LogContext
+  ) {
     const responseMetadata: LogContext = {
       method: req.method,
       path: req.path,
@@ -184,13 +215,21 @@ export class CustomLogger implements LoggerService {
     };
 
     const level = statusCode >= 400 ? 'warn' : 'info';
-    this.logWithLevel(level, `${req.method} ${req.path} ${statusCode} ${duration}ms`, responseMetadata);
+    this.logWithLevel(
+      level,
+      `${req.method} ${req.path} ${statusCode} ${duration}ms`,
+      responseMetadata
+    );
   }
 
   /**
    * Log business event
    */
-  logBusinessEvent(event: string, data?: Record<string, any>, context?: LogContext) {
+  logBusinessEvent(
+    event: string,
+    data?: Record<string, any>,
+    context?: LogContext
+  ) {
     const eventMetadata: LogContext = {
       event,
       ...data,
@@ -203,7 +242,12 @@ export class CustomLogger implements LoggerService {
   /**
    * Log database operation
    */
-  logDatabaseOperation(operation: string, table: string, duration?: number, context?: LogContext) {
+  logDatabaseOperation(
+    operation: string,
+    table: string,
+    duration?: number,
+    context?: LogContext
+  ) {
     const dbMetadata: LogContext = {
       operation: 'database',
       dbOperation: operation,
@@ -212,13 +256,22 @@ export class CustomLogger implements LoggerService {
       ...context,
     };
 
-    this.debug(`Database ${operation} on ${table}${duration ? ` (${duration}ms)` : ''}`, dbMetadata);
+    this.debug(
+      `Database ${operation} on ${table}${duration ? ` (${duration}ms)` : ''}`,
+      dbMetadata
+    );
   }
 
   /**
    * Log cache operation
    */
-  logCacheOperation(operation: string, key: string, hit: boolean, duration?: number, context?: LogContext) {
+  logCacheOperation(
+    operation: string,
+    key: string,
+    hit: boolean,
+    duration?: number,
+    context?: LogContext
+  ) {
     const cacheMetadata: LogContext = {
       operation: 'cache',
       cacheOperation: operation,
@@ -228,13 +281,20 @@ export class CustomLogger implements LoggerService {
       ...context,
     };
 
-    this.debug(`Cache ${operation} for ${key} (${hit ? 'HIT' : 'MISS'})${duration ? ` (${duration}ms)` : ''}`, cacheMetadata);
+    this.debug(
+      `Cache ${operation} for ${key} (${hit ? 'HIT' : 'MISS'})${duration ? ` (${duration}ms)` : ''}`,
+      cacheMetadata
+    );
   }
 
   /**
    * Log authentication event
    */
-  logAuthEvent(event: 'login' | 'logout' | 'register' | 'failed_login', userId?: string, context?: LogContext) {
+  logAuthEvent(
+    event: 'login' | 'logout' | 'register' | 'failed_login',
+    userId?: string,
+    context?: LogContext
+  ) {
     const authMetadata: LogContext = {
       operation: 'authentication',
       authEvent: event,
@@ -242,13 +302,20 @@ export class CustomLogger implements LoggerService {
       ...context,
     };
 
-    this.log(`Auth Event: ${event}${userId ? ` for user ${userId}` : ''}`, authMetadata);
+    this.log(
+      `Auth Event: ${event}${userId ? ` for user ${userId}` : ''}`,
+      authMetadata
+    );
   }
 
   /**
    * Log security event
    */
-  logSecurityEvent(event: string, severity: 'low' | 'medium' | 'high' | 'critical', context?: LogContext) {
+  logSecurityEvent(
+    event: string,
+    severity: 'low' | 'medium' | 'high' | 'critical',
+    context?: LogContext
+  ) {
     const securityMetadata: LogContext = {
       operation: 'security',
       securityEvent: event,
@@ -256,7 +323,8 @@ export class CustomLogger implements LoggerService {
       ...context,
     };
 
-    const level = severity === 'critical' ? 'error' : severity === 'high' ? 'warn' : 'info';
+    const level =
+      severity === 'critical' ? 'error' : severity === 'high' ? 'warn' : 'info';
     this.logWithLevel(level, `Security Event: ${event}`, securityMetadata);
   }
 
@@ -284,7 +352,7 @@ export class CustomLogger implements LoggerService {
 export function createLoggingMiddleware(logger: CustomLogger) {
   return (req: Request, res: any, next: any) => {
     const startTime = Date.now();
-    
+
     // Generate correlation ID if not present
     if (!req.headers['x-correlation-id']) {
       req.headers['x-correlation-id'] = generateCorrelationId();
@@ -295,7 +363,7 @@ export function createLoggingMiddleware(logger: CustomLogger) {
 
     // Override res.end to log response
     const originalEnd = res.end;
-    res.end = function(...args: any[]) {
+    res.end = function (...args: any[]) {
       const duration = Date.now() - startTime;
       logger.logResponse(req, res.statusCode, duration);
       originalEnd.apply(this, args);
@@ -315,22 +383,27 @@ function generateCorrelationId(): string {
 /**
  * Error logging utility
  */
-export function logError(logger: CustomLogger, error: Error, context?: LogContext) {
-  logger.error(
-    error.message,
-    error,
-    {
-      operation: 'error_handler',
-      errorName: error.name,
-      ...context,
-    }
-  );
+export function logError(
+  logger: CustomLogger,
+  error: Error,
+  context?: LogContext
+) {
+  logger.error(error.message, error, {
+    operation: 'error_handler',
+    errorName: error.name,
+    ...context,
+  });
 }
 
 /**
  * Performance logging utility
  */
-export function logPerformance(logger: CustomLogger, operation: string, startTime: number, context?: LogContext) {
+export function logPerformance(
+  logger: CustomLogger,
+  operation: string,
+  startTime: number,
+  context?: LogContext
+) {
   const duration = Date.now() - startTime;
   logger.debug(`Performance: ${operation} completed in ${duration}ms`, {
     operation: 'performance',

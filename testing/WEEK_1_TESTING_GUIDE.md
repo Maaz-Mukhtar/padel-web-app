@@ -22,6 +22,7 @@ kubectl version --client
 ```
 
 **Expected Results:**
+
 - Node.js: v20.x.x or higher
 - npm: v10.x.x or higher
 - Docker: v20.x.x or higher
@@ -44,6 +45,7 @@ cd ../api-gateway && npm install
 ```
 
 **Expected Results:**
+
 - All dependencies installed without errors
 - No security vulnerabilities reported
 
@@ -58,6 +60,7 @@ cat .env.test
 ```
 
 **Expected Results:**
+
 - Environment files are present and contain required variables
 
 ## 🧪 Phase 2: Unit & Integration Testing
@@ -77,6 +80,7 @@ npm test
 ```
 
 **Expected Results:**
+
 ```
 Test Suites: X passed, X total
 Tests: X passed, X total
@@ -94,6 +98,7 @@ npm run test:coverage
 ```
 
 **Expected Results:**
+
 - Overall coverage >80%
 - All critical paths covered
 - No failing tests
@@ -115,6 +120,7 @@ cd ../notification && npm test
 ```
 
 **Expected Results:**
+
 - All unit tests pass
 - Integration tests pass
 - No console errors
@@ -135,9 +141,10 @@ docker-compose ps
 ```
 
 **Expected Results:**
+
 ```
 postgres        Up      0.0.0.0:5432->5432/tcp
-redis           Up      0.0.0.0:6379->6379/tcp  
+redis           Up      0.0.0.0:6379->6379/tcp
 elasticsearch   Up      0.0.0.0:9200->9200/tcp
 ```
 
@@ -152,6 +159,7 @@ docker exec -it padel-web-app_redis_1 redis-cli ping
 ```
 
 **Expected Results:**
+
 - PostgreSQL returns version information
 - Redis returns "PONG"
 
@@ -166,6 +174,7 @@ curl -X GET "localhost:9200/_cat/indices?v"
 ```
 
 **Expected Results:**
+
 - Cluster status: "yellow" or "green"
 - Elasticsearch responding on port 9200
 
@@ -193,13 +202,14 @@ cd ../api-gateway && npm run dev &
 # Check all service health endpoints
 curl http://localhost:3000/health  # API Gateway
 curl http://localhost:3001/health  # Auth Service
-curl http://localhost:3002/health  # User Service  
+curl http://localhost:3002/health  # User Service
 curl http://localhost:3003/health  # Booking Service
 curl http://localhost:3004/health  # Notification Service
 ```
 
 **Expected Results:**
 All services return:
+
 ```json
 {
   "status": "healthy",
@@ -226,6 +236,7 @@ curl -X POST http://localhost:3000/api/auth/register \
 ```
 
 **Expected Result:**
+
 ```json
 {
   "id": "uuid-string",
@@ -252,6 +263,7 @@ curl -X POST http://localhost:3000/api/auth/login \
 ```
 
 **Expected Result:**
+
 ```json
 {
   "access_token": "jwt-token-string",
@@ -279,6 +291,7 @@ curl -X POST http://localhost:3000/api/auth/verify-token \
 ```
 
 **Expected Result:**
+
 ```json
 {
   "sub": "user-id",
@@ -298,6 +311,7 @@ curl -X GET http://localhost:3000/api/auth/profile \
 ```
 
 **Expected Result:**
+
 ```json
 {
   "id": "user-id",
@@ -327,6 +341,7 @@ curl -X POST http://localhost:3000/api/users/profile \
 ```
 
 **Expected Result:**
+
 ```json
 {
   "id": "profile-id",
@@ -367,6 +382,7 @@ curl -X GET "http://localhost:3000/api/users/search?skillLevel=intermediate&limi
 ```
 
 **Expected Result:**
+
 ```json
 {
   "profiles": [...],
@@ -398,6 +414,7 @@ kubectl port-forward svc/kibana 5601:5601 -n elasticsearch &
 ```
 
 **Test in Browser:**
+
 1. **Prometheus**: http://localhost:9090
    - Check Status > Targets
    - Should see all services being scraped
@@ -421,6 +438,7 @@ curl http://localhost:3004/metrics  # Notification service
 ```
 
 **Expected Results:**
+
 - Prometheus metrics format
 - HTTP request metrics
 - Service-specific business metrics
@@ -461,6 +479,7 @@ k6 run load-test.js
 ```
 
 **Expected Results:**
+
 - All health checks pass
 - Response time < 100ms
 - No failed requests
@@ -483,19 +502,19 @@ export let options = {
 
 export default function() {
   // Test login
-  let loginResponse = http.post('http://localhost:3000/api/auth/login', 
+  let loginResponse = http.post('http://localhost:3000/api/auth/login',
     JSON.stringify({
       email: 'test@example.com',
       password: 'TestPass123!'
-    }), 
+    }),
     { headers: { 'Content-Type': 'application/json' } }
   );
-  
+
   check(loginResponse, {
     'login status is 200': (r) => r.status === 200,
     'has access token': (r) => JSON.parse(r.body).access_token !== undefined,
   });
-  
+
   sleep(2);
 }
 EOF
@@ -509,12 +528,14 @@ k6 run auth-load-test.js
 ### Step 9.1: Verify Swagger Documentation
 
 **Open in Browser:**
+
 1. **Auth Service API Docs**: http://localhost:3001/api/docs
 2. **User Service API Docs**: http://localhost:3002/api/docs
 3. **Booking Service API Docs**: http://localhost:3003/api/docs
 4. **Notification Service API Docs**: http://localhost:3004/api/docs
 
 **Verify:**
+
 - All endpoints documented
 - Request/response schemas present
 - Try "Try it out" functionality
@@ -528,6 +549,7 @@ curl -X GET http://localhost:3001/api/docs/json
 ```
 
 **Expected Result:**
+
 - Valid OpenAPI/Swagger JSON specification
 
 ## 🔄 Phase 10: End-to-End User Journey
@@ -602,12 +624,14 @@ docker exec -it padel-web-app_postgres_1 psql -U padel_user -d user_service \
 ## ✅ Phase 11: Final Verification Checklist
 
 ### Infrastructure ✅
+
 - [ ] All Docker containers running
 - [ ] Database connections working
 - [ ] Redis cache accessible
 - [ ] Elasticsearch responding
 
 ### Services ✅
+
 - [ ] Auth Service health check passes
 - [ ] User Service health check passes
 - [ ] Booking Service health check passes
@@ -615,6 +639,7 @@ docker exec -it padel-web-app_postgres_1 psql -U padel_user -d user_service \
 - [ ] API Gateway routing works
 
 ### API Functionality ✅
+
 - [ ] User registration works
 - [ ] User login returns valid JWT
 - [ ] Protected routes require authentication
@@ -622,18 +647,21 @@ docker exec -it padel-web-app_postgres_1 psql -U padel_user -d user_service \
 - [ ] Search functionality works
 
 ### Testing ✅
+
 - [ ] All unit tests pass
 - [ ] Test coverage > 80%
 - [ ] Integration tests pass
 - [ ] Load testing shows acceptable performance
 
 ### Monitoring ✅
+
 - [ ] Prometheus collecting metrics
 - [ ] Grafana dashboards loading
 - [ ] Kibana showing logs
 - [ ] Correlation IDs present in logs
 
 ### Documentation ✅
+
 - [ ] Swagger API docs accessible
 - [ ] All endpoints documented correctly
 - [ ] Authentication documented
@@ -642,6 +670,7 @@ docker exec -it padel-web-app_postgres_1 psql -U padel_user -d user_service \
 ## 🐛 Troubleshooting Common Issues
 
 ### Services Won't Start
+
 ```bash
 # Check port availability
 netstat -tulpn | grep :3001
@@ -655,6 +684,7 @@ docker-compose restart postgres
 ```
 
 ### Database Connection Issues
+
 ```bash
 # Check database logs
 docker-compose logs postgres
@@ -667,6 +697,7 @@ docker exec -it container-name psql -U username -d database
 ```
 
 ### JWT Token Issues
+
 ```bash
 # Verify token format
 echo "YOUR_JWT_TOKEN" | base64 -d
@@ -678,6 +709,7 @@ curl -X POST http://localhost:3001/api/auth/verify-token \
 ```
 
 ### Monitoring Not Working
+
 ```bash
 # Check if metrics endpoints are accessible
 curl http://localhost:3001/metrics
@@ -708,6 +740,7 @@ You've successfully validated Week 1 if:
 ## 📞 Need Help?
 
 If you encounter issues:
+
 1. Check the troubleshooting section above
 2. Review service logs for error messages
 3. Verify all prerequisites are met

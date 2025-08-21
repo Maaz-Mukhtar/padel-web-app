@@ -34,7 +34,7 @@ describe('CustomLogger', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     mockWinstonLogger = winston.createLogger() as jest.Mocked<winston.Logger>;
     customLogger = new CustomLogger('test-service', 'TestContext');
   });
@@ -83,7 +83,9 @@ describe('CustomLogger', () => {
 
       customLogger.log(message);
 
-      expect(mockWinstonLogger.info).toHaveBeenCalledWith(message, { context: undefined });
+      expect(mockWinstonLogger.info).toHaveBeenCalledWith(message, {
+        context: undefined,
+      });
     });
   });
 
@@ -95,9 +97,9 @@ describe('CustomLogger', () => {
 
       customLogger.error(message, trace, context);
 
-      expect(mockWinstonLogger.error).toHaveBeenCalledWith(message, { 
-        trace, 
-        context 
+      expect(mockWinstonLogger.error).toHaveBeenCalledWith(message, {
+        trace,
+        context,
       });
     });
 
@@ -106,9 +108,9 @@ describe('CustomLogger', () => {
 
       customLogger.error(message);
 
-      expect(mockWinstonLogger.error).toHaveBeenCalledWith(message, { 
-        trace: undefined, 
-        context: undefined 
+      expect(mockWinstonLogger.error).toHaveBeenCalledWith(message, {
+        trace: undefined,
+        context: undefined,
       });
     });
   });
@@ -131,7 +133,9 @@ describe('CustomLogger', () => {
 
       customLogger.debug(message, context);
 
-      expect(mockWinstonLogger.debug).toHaveBeenCalledWith(message, { context });
+      expect(mockWinstonLogger.debug).toHaveBeenCalledWith(message, {
+        context,
+      });
     });
   });
 
@@ -142,7 +146,9 @@ describe('CustomLogger', () => {
 
       customLogger.verbose(message, context);
 
-      expect(mockWinstonLogger.verbose).toHaveBeenCalledWith(message, { context });
+      expect(mockWinstonLogger.verbose).toHaveBeenCalledWith(message, {
+        context,
+      });
     });
   });
 

@@ -18,6 +18,7 @@ Complete guide for deploying the Padel Platform microservices to various environ
 The Padel Platform consists of 4 core microservices with supporting infrastructure:
 
 ### Core Services
+
 - **API Gateway** (Port 3000): Main entry point and request routing
 - **Auth Service** (Port 3001): User authentication and authorization
 - **User Service** (Port 3002): User profiles and social features
@@ -25,6 +26,7 @@ The Padel Platform consists of 4 core microservices with supporting infrastructu
 - **Notification Service** (Port 3004): Email, SMS, and push notifications
 
 ### Infrastructure
+
 - **PostgreSQL**: Primary database for all services
 - **Redis**: Caching and session storage
 - **Elasticsearch**: Logging and search functionality
@@ -342,17 +344,17 @@ services:
     environment:
       - LOG_LEVEL=debug
     ports:
-      - "3000:3000"
-      
+      - '3000:3000'
+
   auth-service:
     environment:
       - LOG_LEVEL=debug
     ports:
-      - "3001:3001"
-      
+      - '3001:3001'
+
   postgres:
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 ```
@@ -381,9 +383,9 @@ Prometheus automatically discovers services with annotations:
 
 ```yaml
 annotations:
-  prometheus.io/scrape: "true"
-  prometheus.io/port: "3001"
-  prometheus.io/path: "/metrics"
+  prometheus.io/scrape: 'true'
+  prometheus.io/port: '3001'
+  prometheus.io/path: '/metrics'
 ```
 
 ### Grafana Dashboards

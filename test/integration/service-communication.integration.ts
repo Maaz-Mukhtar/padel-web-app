@@ -19,7 +19,7 @@ describe('Service Communication Integration Tests', () => {
     // Mock Auth Service
     const authApp = express();
     authApp.use(express.json());
-    
+
     authApp.get('/health', (req, res) => {
       res.json({ status: 'healthy', service: 'auth' });
     });
@@ -42,7 +42,7 @@ describe('Service Communication Integration Tests', () => {
     // Mock User Service
     const userApp = express();
     userApp.use(express.json());
-    
+
     userApp.get('/health', (req, res) => {
       res.json({ status: 'healthy', service: 'user' });
     });
@@ -68,10 +68,10 @@ describe('Service Communication Integration Tests', () => {
     gatewayApp.use(express.json());
 
     gatewayApp.get('/health', (req, res) => {
-      res.json({ 
-        status: 'healthy', 
+      res.json({
+        status: 'healthy',
         service: 'api-gateway',
-        timestamp: new Date().toISOString() 
+        timestamp: new Date().toISOString(),
       });
     });
 
@@ -90,13 +90,13 @@ describe('Service Communication Integration Tests', () => {
     // Proxy to user service with auth
     gatewayApp.use('/api/users', async (req, res) => {
       const authHeader = req.headers.authorization;
-      
+
       if (!authHeader) {
         return res.status(401).json({ message: 'Authorization required' });
       }
 
       const token = authHeader.replace('Bearer ', '');
-      
+
       try {
         // Verify token with auth service
         const authResponse = await request(`http://localhost:${authPort}`)
@@ -108,9 +108,10 @@ describe('Service Communication Integration Tests', () => {
         }
 
         // Forward to user service
-        const userResponse = await request(`http://localhost:${userPort}`)
-          .get(req.path);
-        
+        const userResponse = await request(`http://localhost:${userPort}`).get(
+          req.path
+        );
+
         res.status(userResponse.status).json(userResponse.body);
       } catch (error) {
         res.status(502).json({ error: 'Service unavailable' });
@@ -264,11 +265,13 @@ describe('Service Communication Integration Tests', () => {
 
   describe('Performance and Load', () => {
     it('should handle multiple concurrent requests', async () => {
-      const requests = Array(10).fill(null).map(() =>
-        request(`http://localhost:${gatewayPort}`)
-          .post('/api/auth/verify-token')
-          .send({ token: 'valid-token' })
-      );
+      const requests = Array(10)
+        .fill(null)
+        .map(() =>
+          request(`http://localhost:${gatewayPort}`)
+            .post('/api/auth/verify-token')
+            .send({ token: 'valid-token' })
+        );
 
       const responses = await Promise.all(requests);
 
@@ -281,10 +284,9 @@ describe('Service Communication Integration Tests', () => {
     it('should maintain performance under load', async () => {
       const startTime = Date.now();
 
-      const requests = Array(20).fill(null).map(() =>
-        request(`http://localhost:${gatewayPort}`)
-          .get('/health')
-      );
+      const requests = Array(20)
+        .fill(null)
+        .map(() => request(`http://localhost:${gatewayPort}`).get('/health'));
 
       await Promise.all(requests);
 

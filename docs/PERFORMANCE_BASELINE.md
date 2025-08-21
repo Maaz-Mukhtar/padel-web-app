@@ -11,17 +11,19 @@ The Padel Platform microservices architecture has been performance tested across
 ✅ **Overall Performance**: Meets target requirements for Phase 1  
 ✅ **Scalability**: Architecture supports horizontal scaling  
 ⚠️ **Optimization Opportunities**: Several areas identified for improvement  
-✅ **Monitoring**: Comprehensive metrics collection in place  
+✅ **Monitoring**: Comprehensive metrics collection in place
 
 ## Test Environment
 
 ### Infrastructure
+
 - **Kubernetes Cluster**: 3 nodes (4 CPU, 8GB RAM each)
 - **Database**: PostgreSQL 15 (2 CPU, 4GB RAM)
 - **Cache**: Redis 7 (1 CPU, 2GB RAM)
 - **Load Balancer**: NGINX Ingress Controller
 
 ### Test Configuration
+
 - **Load Testing Tool**: K6
 - **Duration**: 30 minutes per test
 - **Ramp-up**: 2 minutes
@@ -31,53 +33,54 @@ The Padel Platform microservices architecture has been performance tested across
 
 ### Response Time Baseline
 
-| Service | Endpoint | 50th %ile | 90th %ile | 95th %ile | 99th %ile | Target |
-|---------|----------|-----------|-----------|-----------|-----------|---------|
-| **API Gateway** | /health | 15ms | 35ms | 45ms | 65ms | <100ms |
-| **Auth Service** | POST /auth/login | 125ms | 180ms | 220ms | 350ms | <200ms |
-| **Auth Service** | POST /auth/register | 245ms | 380ms | 450ms | 680ms | <500ms |
-| **User Service** | GET /profile/:id | 85ms | 140ms | 170ms | 280ms | <200ms |
-| **User Service** | POST /profile | 165ms | 250ms | 310ms | 480ms | <300ms |
-| **Booking Service** | GET /health | 20ms | 40ms | 50ms | 75ms | <100ms |
-| **Notification Service** | GET /health | 18ms | 38ms | 48ms | 72ms | <100ms |
+| Service                  | Endpoint            | 50th %ile | 90th %ile | 95th %ile | 99th %ile | Target |
+| ------------------------ | ------------------- | --------- | --------- | --------- | --------- | ------ |
+| **API Gateway**          | /health             | 15ms      | 35ms      | 45ms      | 65ms      | <100ms |
+| **Auth Service**         | POST /auth/login    | 125ms     | 180ms     | 220ms     | 350ms     | <200ms |
+| **Auth Service**         | POST /auth/register | 245ms     | 380ms     | 450ms     | 680ms     | <500ms |
+| **User Service**         | GET /profile/:id    | 85ms      | 140ms     | 170ms     | 280ms     | <200ms |
+| **User Service**         | POST /profile       | 165ms     | 250ms     | 310ms     | 480ms     | <300ms |
+| **Booking Service**      | GET /health         | 20ms      | 40ms      | 50ms      | 75ms      | <100ms |
+| **Notification Service** | GET /health         | 18ms      | 38ms      | 48ms      | 72ms      | <100ms |
 
 ### Throughput Baseline
 
-| Service | Endpoint | RPS (Sustained) | RPS (Peak) | Target |
-|---------|----------|-----------------|------------|---------|
-| **API Gateway** | All routes | 2,500 | 3,200 | 1,000+ |
-| **Auth Service** | Login/Register | 800 | 1,200 | 500+ |
-| **User Service** | Profile operations | 1,200 | 1,800 | 800+ |
-| **Booking Service** | Booking operations | 600 | 900 | 400+ |
-| **Notification Service** | Send notifications | 1,500 | 2,200 | 1,000+ |
+| Service                  | Endpoint           | RPS (Sustained) | RPS (Peak) | Target |
+| ------------------------ | ------------------ | --------------- | ---------- | ------ |
+| **API Gateway**          | All routes         | 2,500           | 3,200      | 1,000+ |
+| **Auth Service**         | Login/Register     | 800             | 1,200      | 500+   |
+| **User Service**         | Profile operations | 1,200           | 1,800      | 800+   |
+| **Booking Service**      | Booking operations | 600             | 900        | 400+   |
+| **Notification Service** | Send notifications | 1,500           | 2,200      | 1,000+ |
 
 ### Error Rate Baseline
 
-| Service | Error Rate (%) | Target | Status |
-|---------|----------------|---------|---------|
-| **API Gateway** | 0.02% | <0.1% | ✅ Pass |
-| **Auth Service** | 0.08% | <0.1% | ✅ Pass |
-| **User Service** | 0.05% | <0.1% | ✅ Pass |
-| **Booking Service** | 0.03% | <0.1% | ✅ Pass |
-| **Notification Service** | 0.01% | <0.1% | ✅ Pass |
+| Service                  | Error Rate (%) | Target | Status  |
+| ------------------------ | -------------- | ------ | ------- |
+| **API Gateway**          | 0.02%          | <0.1%  | ✅ Pass |
+| **Auth Service**         | 0.08%          | <0.1%  | ✅ Pass |
+| **User Service**         | 0.05%          | <0.1%  | ✅ Pass |
+| **Booking Service**      | 0.03%          | <0.1%  | ✅ Pass |
+| **Notification Service** | 0.01%          | <0.1%  | ✅ Pass |
 
 ### Resource Utilization
 
-| Service | CPU (Avg) | CPU (Peak) | Memory (Avg) | Memory (Peak) |
-|---------|-----------|------------|--------------|---------------|
-| **API Gateway** | 15% | 35% | 120MB | 180MB |
-| **Auth Service** | 25% | 55% | 280MB | 420MB |
-| **User Service** | 20% | 45% | 240MB | 360MB |
-| **Booking Service** | 18% | 40% | 200MB | 300MB |
-| **Notification Service** | 12% | 28% | 150MB | 220MB |
-| **PostgreSQL** | 35% | 65% | 1.2GB | 1.8GB |
-| **Redis** | 8% | 15% | 180MB | 280MB |
+| Service                  | CPU (Avg) | CPU (Peak) | Memory (Avg) | Memory (Peak) |
+| ------------------------ | --------- | ---------- | ------------ | ------------- |
+| **API Gateway**          | 15%       | 35%        | 120MB        | 180MB         |
+| **Auth Service**         | 25%       | 55%        | 280MB        | 420MB         |
+| **User Service**         | 20%       | 45%        | 240MB        | 360MB         |
+| **Booking Service**      | 18%       | 40%        | 200MB        | 300MB         |
+| **Notification Service** | 12%       | 28%        | 150MB        | 220MB         |
+| **PostgreSQL**           | 35%       | 65%        | 1.2GB        | 1.8GB         |
+| **Redis**                | 8%        | 15%        | 180MB        | 280MB         |
 
 ## Load Testing Results
 
 ### Test Scenarios
 
 #### Scenario 1: User Registration Flow
+
 ```javascript
 // K6 Test Script
 import http from 'k6/http';
@@ -93,7 +96,7 @@ export let options = {
   ],
 };
 
-export default function() {
+export default function () {
   // User registration
   let registrationData = {
     email: `user${Math.random()}@example.com`,
@@ -109,8 +112,8 @@ export default function() {
   );
 
   check(registrationResponse, {
-    'registration status is 201': (r) => r.status === 201,
-    'registration response time < 500ms': (r) => r.timings.duration < 500,
+    'registration status is 201': r => r.status === 201,
+    'registration response time < 500ms': r => r.timings.duration < 500,
   });
 
   sleep(Math.random() * 3 + 1); // 1-4 seconds think time
@@ -118,6 +121,7 @@ export default function() {
 ```
 
 **Results:**
+
 - **Average Response Time**: 245ms
 - **95th Percentile**: 450ms
 - **Throughput**: 800 registrations/second
@@ -125,8 +129,9 @@ export default function() {
 - **Status**: ✅ **PASS** - Meets requirements
 
 #### Scenario 2: Authentication Load
+
 ```javascript
-export default function() {
+export default function () {
   // Login request
   let loginData = {
     email: 'existing.user@example.com',
@@ -140,23 +145,22 @@ export default function() {
   );
 
   check(loginResponse, {
-    'login status is 200': (r) => r.status === 200,
-    'login response time < 200ms': (r) => r.timings.duration < 200,
-    'has access token': (r) => JSON.parse(r.body).access_token !== undefined,
+    'login status is 200': r => r.status === 200,
+    'login response time < 200ms': r => r.timings.duration < 200,
+    'has access token': r => JSON.parse(r.body).access_token !== undefined,
   });
 
   if (loginResponse.status === 200) {
     let token = JSON.parse(loginResponse.body).access_token;
-    
+
     // Profile access
-    let profileResponse = http.get(
-      'http://api-gateway:3000/api/auth/profile',
-      { headers: { 'Authorization': `Bearer ${token}` } }
-    );
+    let profileResponse = http.get('http://api-gateway:3000/api/auth/profile', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     check(profileResponse, {
-      'profile status is 200': (r) => r.status === 200,
-      'profile response time < 200ms': (r) => r.timings.duration < 200,
+      'profile status is 200': r => r.status === 200,
+      'profile response time < 200ms': r => r.timings.duration < 200,
     });
   }
 
@@ -165,14 +169,16 @@ export default function() {
 ```
 
 **Results:**
+
 - **Login Response Time**: 125ms (avg), 220ms (95th)
 - **Profile Response Time**: 85ms (avg), 170ms (95th)
 - **Combined Success Rate**: 99.92%
 - **Status**: ✅ **PASS** - Exceeds requirements
 
 #### Scenario 3: Database Load Testing
+
 ```javascript
-export default function() {
+export default function () {
   // Create user profile (database write)
   let profileData = {
     userId: `user-${Math.random()}`,
@@ -184,31 +190,31 @@ export default function() {
   let createResponse = http.post(
     'http://api-gateway:3000/api/users/profile',
     JSON.stringify(profileData),
-    { 
-      headers: { 
+    {
+      headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAuthToken()}`
-      } 
+        Authorization: `Bearer ${getAuthToken()}`,
+      },
     }
   );
 
   check(createResponse, {
-    'profile creation status is 201': (r) => r.status === 201,
-    'profile creation time < 300ms': (r) => r.timings.duration < 300,
+    'profile creation status is 201': r => r.status === 201,
+    'profile creation time < 300ms': r => r.timings.duration < 300,
   });
 
   // Read user profile (database read)
   if (createResponse.status === 201) {
     let userId = JSON.parse(createResponse.body).userId;
-    
+
     let readResponse = http.get(
       `http://api-gateway:3000/api/users/profile/${userId}`,
-      { headers: { 'Authorization': `Bearer ${getAuthToken()}` } }
+      { headers: { Authorization: `Bearer ${getAuthToken()}` } }
     );
 
     check(readResponse, {
-      'profile read status is 200': (r) => r.status === 200,
-      'profile read time < 200ms': (r) => r.timings.duration < 200,
+      'profile read status is 200': r => r.status === 200,
+      'profile read time < 200ms': r => r.timings.duration < 200,
     });
   }
 
@@ -217,6 +223,7 @@ export default function() {
 ```
 
 **Results:**
+
 - **Database Write**: 165ms (avg), 310ms (95th)
 - **Database Read**: 85ms (avg), 170ms (95th)
 - **Database Connection Pool**: Stable at 80% utilization
@@ -226,13 +233,13 @@ export default function() {
 
 ### Breaking Point Analysis
 
-| Service | Breaking Point | Behavior at Limit |
-|---------|----------------|-------------------|
-| **API Gateway** | 3,500 RPS | Response time degrades gradually |
-| **Auth Service** | 1,400 RPS | CPU reaches 90%, response time spikes |
-| **User Service** | 2,000 RPS | Memory pressure, GC pauses increase |
-| **PostgreSQL** | 2,500 connections | Connection pool exhaustion |
-| **Redis** | 10,000 ops/sec | Performance remains stable |
+| Service          | Breaking Point    | Behavior at Limit                     |
+| ---------------- | ----------------- | ------------------------------------- |
+| **API Gateway**  | 3,500 RPS         | Response time degrades gradually      |
+| **Auth Service** | 1,400 RPS         | CPU reaches 90%, response time spikes |
+| **User Service** | 2,000 RPS         | Memory pressure, GC pauses increase   |
+| **PostgreSQL**   | 2,500 connections | Connection pool exhaustion            |
+| **Redis**        | 10,000 ops/sec    | Performance remains stable            |
 
 ### Failure Modes
 
@@ -256,6 +263,7 @@ export default function() {
 ### High Priority (Week 2)
 
 #### 1. Database Connection Pool Optimization
+
 ```yaml
 # Current: 20 connections per service
 # Recommended: 50 connections per service
@@ -265,6 +273,7 @@ DATABASE_POOL_IDLE_TIMEOUT: 300000
 ```
 
 #### 2. Redis Caching Implementation
+
 ```typescript
 // Implement caching for frequently accessed data
 const userProfileCache = new Redis({
@@ -278,7 +287,7 @@ const userProfileCache = new Redis({
 async getUserProfile(userId: string) {
   const cached = await userProfileCache.get(userId);
   if (cached) return JSON.parse(cached);
-  
+
   const profile = await this.userRepository.findOne({ userId });
   await userProfileCache.set(userId, JSON.stringify(profile));
   return profile;
@@ -286,6 +295,7 @@ async getUserProfile(userId: string) {
 ```
 
 #### 3. Database Query Optimization
+
 ```sql
 -- Add indexes for common queries
 CREATE INDEX CONCURRENTLY idx_users_email ON users(email);
@@ -299,19 +309,23 @@ EXPLAIN ANALYZE SELECT * FROM user_profiles WHERE skill_level = 'intermediate' A
 ### Medium Priority (Week 3-4)
 
 #### 4. API Response Compression
+
 ```typescript
 // Enable gzip compression
-app.use(compression({
-  filter: (req, res) => {
-    if (req.headers['x-no-compression']) return false;
-    return compression.filter(req, res);
-  },
-  level: 6,
-  threshold: 1024,
-}));
+app.use(
+  compression({
+    filter: (req, res) => {
+      if (req.headers['x-no-compression']) return false;
+      return compression.filter(req, res);
+    },
+    level: 6,
+    threshold: 1024,
+  })
+);
 ```
 
 #### 5. Database Read Replicas
+
 ```yaml
 # Add read replica configuration
 database:
@@ -326,6 +340,7 @@ database:
 ```
 
 #### 6. Horizontal Pod Autoscaling
+
 ```yaml
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
@@ -339,33 +354,36 @@ spec:
   minReplicas: 2
   maxReplicas: 10
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 70
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: 80
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 80
 ```
 
 ### Low Priority (Future Optimization)
 
 #### 7. CDN Integration
+
 - Implement CDN for static assets
 - Cache API responses at edge locations
 - Reduce latency for global users
 
 #### 8. Database Sharding
+
 - Implement user-based database sharding
 - Distribute load across multiple database instances
 - Plan for horizontal scaling beyond single region
 
 #### 9. Microservice Mesh
+
 - Implement service mesh (Istio/Linkerd)
 - Advanced traffic management
 - Circuit breaker patterns
@@ -382,7 +400,7 @@ spec:
   labels:
     severity: warning
   annotations:
-    summary: "95th percentile response time > 500ms"
+    summary: '95th percentile response time > 500ms'
 
 # High CPU usage alert
 - alert: HighCPUUsage
@@ -391,7 +409,7 @@ spec:
   labels:
     severity: warning
   annotations:
-    summary: "CPU usage > 80%"
+    summary: 'CPU usage > 80%'
 
 # Database connection pool alert
 - alert: DatabaseConnectionPoolHigh
@@ -400,7 +418,7 @@ spec:
   labels:
     severity: critical
   annotations:
-    summary: "Database connection pool > 80% utilization"
+    summary: 'Database connection pool > 80% utilization'
 ```
 
 ### Performance Dashboards
@@ -430,7 +448,7 @@ jobs:
         run: |
           k6 run --out influxdb=http://influxdb:8086/k6 \
                  performance-tests/load-test.js
-      
+
       - name: Performance Regression Check
         run: |
           # Compare results with baseline
@@ -439,12 +457,12 @@ jobs:
 
 ### Performance Budget
 
-| Metric | Baseline | Budget | Alert Threshold |
-|--------|----------|---------|-----------------|
-| **API Response Time (95th)** | 220ms | 250ms | 300ms |
-| **Database Query Time** | 50ms | 75ms | 100ms |
-| **Memory Usage** | 280MB | 400MB | 500MB |
-| **Error Rate** | 0.08% | 0.1% | 0.5% |
+| Metric                       | Baseline | Budget | Alert Threshold |
+| ---------------------------- | -------- | ------ | --------------- |
+| **API Response Time (95th)** | 220ms    | 250ms  | 300ms           |
+| **Database Query Time**      | 50ms     | 75ms   | 100ms           |
+| **Memory Usage**             | 280MB    | 400MB  | 500MB           |
+| **Error Rate**               | 0.08%    | 0.1%   | 0.5%            |
 
 ## Conclusion
 

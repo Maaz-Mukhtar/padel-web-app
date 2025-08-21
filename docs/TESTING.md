@@ -109,6 +109,7 @@ Unit tests focus on individual components, services, and utilities.
 **Naming Convention**: `{component}.spec.ts`
 
 **Example**:
+
 ```typescript
 // services/auth/src/modules/auth/auth.service.spec.ts
 describe('AuthService', () => {
@@ -127,6 +128,7 @@ Integration tests verify service-to-service communication and database interacti
 **Location**: `test/integration/`
 
 **Example**:
+
 ```typescript
 // test/integration/auth-service.integration.ts
 describe('Auth Service Integration', () => {
@@ -141,6 +143,7 @@ describe('Auth Service Integration', () => {
 E2E tests simulate complete user journeys through the API Gateway.
 
 **Example Flows**:
+
 - User registration → Email verification → Profile creation
 - Login → Book venue → Receive notification
 - Admin panel → Venue management → Booking approval
@@ -150,6 +153,7 @@ E2E tests simulate complete user journeys through the API Gateway.
 Performance tests establish baselines and identify bottlenecks.
 
 **Metrics Tracked**:
+
 - Response time (< 200ms for most endpoints)
 - Throughput (1000+ requests/second)
 - Error rate (< 0.1%)
@@ -167,13 +171,13 @@ Performance tests establish baselines and identify bottlenecks.
 
 ### Service-Specific Requirements
 
-| Service | Unit Tests | Integration Tests | E2E Coverage |
-|---------|------------|-------------------|--------------|
-| Auth Service | 90%+ | Critical paths | Login flow |
-| User Service | 85%+ | Profile operations | Profile management |
-| Booking Service | 85%+ | Booking flows | Complete booking |
-| Notification Service | 80%+ | Message delivery | Notifications |
-| API Gateway | 80%+ | Routing | All endpoints |
+| Service              | Unit Tests | Integration Tests  | E2E Coverage       |
+| -------------------- | ---------- | ------------------ | ------------------ |
+| Auth Service         | 90%+       | Critical paths     | Login flow         |
+| User Service         | 85%+       | Profile operations | Profile management |
+| Booking Service      | 85%+       | Booking flows      | Complete booking   |
+| Notification Service | 80%+       | Message delivery   | Notifications      |
+| API Gateway          | 80%+       | Routing            | All endpoints      |
 
 ### Coverage Reports
 
@@ -240,15 +244,15 @@ export const testUsers = {
     password: 'TestPass123!',
     firstName: 'Test',
     lastName: 'Player',
-    role: 'player'
+    role: 'player',
   },
   venueOwner: {
     email: 'owner@test.com',
     password: 'TestPass123!',
     firstName: 'Venue',
     lastName: 'Owner',
-    role: 'venue_owner'
-  }
+    role: 'venue_owner',
+  },
 };
 ```
 
@@ -267,6 +271,7 @@ beforeEach(async () => {
 ### GitHub Actions
 
 Tests run automatically on:
+
 - Pull requests
 - Pushes to main/develop branches
 - Scheduled daily runs
@@ -302,6 +307,7 @@ jobs:
 ### Quality Gates
 
 Tests must pass before merging:
+
 - All unit tests pass
 - Integration tests pass
 - Coverage thresholds met
@@ -337,6 +343,7 @@ Tests must pass before merging:
 ### Common Issues
 
 **Tests Hanging**
+
 ```bash
 # Check for open handles
 npm test -- --detectOpenHandles
@@ -346,6 +353,7 @@ npm test -- --forceExit
 ```
 
 **Database Connection Issues**
+
 ```bash
 # Check database status
 docker-compose ps postgres-test
@@ -355,12 +363,14 @@ npm run db:reset:test
 ```
 
 **Memory Issues**
+
 ```bash
 # Increase Node.js memory limit
 NODE_OPTIONS="--max-old-space-size=4096" npm test
 ```
 
 **Debugging Tests**
+
 ```bash
 # Debug specific test
 npm run test:debug -- --testNamePattern="should login user"
@@ -372,6 +382,7 @@ npm run test:debug -- --testNamePattern="should login user"
 ### Performance Issues
 
 **Slow Tests**
+
 ```bash
 # Identify slow tests
 npm test -- --verbose
@@ -386,6 +397,7 @@ npm test -- --runInBand
 ### Coverage Issues
 
 **Low Coverage**
+
 ```bash
 # Detailed coverage report
 npm run test:coverage -- --verbose

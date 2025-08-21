@@ -1,15 +1,15 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class InitialAuthSchema1692000000000 implements MigrationInterface {
-    name = 'InitialAuthSchema1692000000000';
+  name = 'InitialAuthSchema1692000000000';
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        // Enable extensions
-        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
-        await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "citext"`);
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    // Enable extensions
+    await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
+    await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "citext"`);
 
-        // Create users table
-        await queryRunner.query(`
+    // Create users table
+    await queryRunner.query(`
             CREATE TABLE "users" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "email" citext NOT NULL,
@@ -36,8 +36,8 @@ export class InitialAuthSchema1692000000000 implements MigrationInterface {
             )
         `);
 
-        // Create user_preferences table
-        await queryRunner.query(`
+    // Create user_preferences table
+    await queryRunner.query(`
             CREATE TABLE "user_preferences" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "userId" uuid NOT NULL,
@@ -54,8 +54,8 @@ export class InitialAuthSchema1692000000000 implements MigrationInterface {
             )
         `);
 
-        // Create refresh_tokens table
-        await queryRunner.query(`
+    // Create refresh_tokens table
+    await queryRunner.query(`
             CREATE TABLE "refresh_tokens" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "userId" uuid NOT NULL,
@@ -69,8 +69,8 @@ export class InitialAuthSchema1692000000000 implements MigrationInterface {
             )
         `);
 
-        // Create password_reset_tokens table
-        await queryRunner.query(`
+    // Create password_reset_tokens table
+    await queryRunner.query(`
             CREATE TABLE "password_reset_tokens" (
                 "id" uuid NOT NULL DEFAULT uuid_generate_v4(),
                 "userId" uuid NOT NULL,
@@ -84,16 +84,28 @@ export class InitialAuthSchema1692000000000 implements MigrationInterface {
             )
         `);
 
-        // Create indexes
-        await queryRunner.query(`CREATE INDEX "IDX_users_email" ON "users" ("email")`);
-        await queryRunner.query(`CREATE INDEX "IDX_users_role" ON "users" ("role")`);
-        await queryRunner.query(`CREATE INDEX "IDX_users_is_active" ON "users" ("isActive")`);
-        await queryRunner.query(`CREATE INDEX "IDX_refresh_tokens_user_id" ON "refresh_tokens" ("userId")`);
-        await queryRunner.query(`CREATE INDEX "IDX_refresh_tokens_token" ON "refresh_tokens" ("token")`);
-        await queryRunner.query(`CREATE INDEX "IDX_password_reset_tokens_token" ON "password_reset_tokens" ("token")`);
+    // Create indexes
+    await queryRunner.query(
+      `CREATE INDEX "IDX_users_email" ON "users" ("email")`
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_users_role" ON "users" ("role")`
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_users_is_active" ON "users" ("isActive")`
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_refresh_tokens_user_id" ON "refresh_tokens" ("userId")`
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_refresh_tokens_token" ON "refresh_tokens" ("token")`
+    );
+    await queryRunner.query(
+      `CREATE INDEX "IDX_password_reset_tokens_token" ON "password_reset_tokens" ("token")`
+    );
 
-        // Create update trigger function
-        await queryRunner.query(`
+    // Create update trigger function
+    await queryRunner.query(`
             CREATE OR REPLACE FUNCTION update_updated_at_column()
             RETURNS TRIGGER AS $$
             BEGIN
@@ -103,31 +115,41 @@ export class InitialAuthSchema1692000000000 implements MigrationInterface {
             $$ language 'plpgsql'
         `);
 
-        // Apply triggers
-        await queryRunner.query(`CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON "users" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()`);
-        await queryRunner.query(`CREATE TRIGGER update_user_preferences_updated_at BEFORE UPDATE ON "user_preferences" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()`);
-    }
+    // Apply triggers
+    await queryRunner.query(
+      `CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON "users" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()`
+    );
+    await queryRunner.query(
+      `CREATE TRIGGER update_user_preferences_updated_at BEFORE UPDATE ON "user_preferences" FOR EACH ROW EXECUTE FUNCTION update_updated_at_column()`
+    );
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        // Drop triggers
-        await queryRunner.query(`DROP TRIGGER IF EXISTS update_users_updated_at ON "users"`);
-        await queryRunner.query(`DROP TRIGGER IF EXISTS update_user_preferences_updated_at ON "user_preferences"`);
-        
-        // Drop function
-        await queryRunner.query(`DROP FUNCTION IF EXISTS update_updated_at_column()`);
-        
-        // Drop indexes
-        await queryRunner.query(`DROP INDEX "IDX_password_reset_tokens_token"`);
-        await queryRunner.query(`DROP INDEX "IDX_refresh_tokens_token"`);
-        await queryRunner.query(`DROP INDEX "IDX_refresh_tokens_user_id"`);
-        await queryRunner.query(`DROP INDEX "IDX_users_is_active"`);
-        await queryRunner.query(`DROP INDEX "IDX_users_role"`);
-        await queryRunner.query(`DROP INDEX "IDX_users_email"`);
-        
-        // Drop tables
-        await queryRunner.query(`DROP TABLE "password_reset_tokens"`);
-        await queryRunner.query(`DROP TABLE "refresh_tokens"`);
-        await queryRunner.query(`DROP TABLE "user_preferences"`);
-        await queryRunner.query(`DROP TABLE "users"`);
-    }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    // Drop triggers
+    await queryRunner.query(
+      `DROP TRIGGER IF EXISTS update_users_updated_at ON "users"`
+    );
+    await queryRunner.query(
+      `DROP TRIGGER IF EXISTS update_user_preferences_updated_at ON "user_preferences"`
+    );
+
+    // Drop function
+    await queryRunner.query(
+      `DROP FUNCTION IF EXISTS update_updated_at_column()`
+    );
+
+    // Drop indexes
+    await queryRunner.query(`DROP INDEX "IDX_password_reset_tokens_token"`);
+    await queryRunner.query(`DROP INDEX "IDX_refresh_tokens_token"`);
+    await queryRunner.query(`DROP INDEX "IDX_refresh_tokens_user_id"`);
+    await queryRunner.query(`DROP INDEX "IDX_users_is_active"`);
+    await queryRunner.query(`DROP INDEX "IDX_users_role"`);
+    await queryRunner.query(`DROP INDEX "IDX_users_email"`);
+
+    // Drop tables
+    await queryRunner.query(`DROP TABLE "password_reset_tokens"`);
+    await queryRunner.query(`DROP TABLE "refresh_tokens"`);
+    await queryRunner.query(`DROP TABLE "user_preferences"`);
+    await queryRunner.query(`DROP TABLE "users"`);
+  }
 }

@@ -11,7 +11,7 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-    }),
+    })
   );
 
   app.enableVersioning({
@@ -26,7 +26,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Padel Platform - Booking Service')
-    .setDescription('Booking management API for Pakistan\'s premier padel booking platform')
+    .setDescription(
+      "Booking management API for Pakistan's premier padel booking platform"
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('booking', 'Booking management endpoints')

@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'test') {
     debug: jest.fn(),
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn()
+    error: jest.fn(),
   };
 }
 
@@ -24,7 +24,7 @@ global.testUser = {
   email: 'test@example.com',
   firstName: 'Test',
   lastName: 'User',
-  role: 'player'
+  role: 'player',
 };
 
 // Setup global mocks

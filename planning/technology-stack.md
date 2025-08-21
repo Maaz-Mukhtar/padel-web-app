@@ -3,6 +3,7 @@
 ## 🎯 Technology Philosophy
 
 ### Design Principles
+
 - **Cloud-Native**: Built for scalability and modern deployment patterns
 - **API-First**: Contract-driven development with OpenAPI specifications
 - **Microservices**: Domain-driven service boundaries for maintainability
@@ -15,7 +16,9 @@
 ## 🖥️ Frontend Technology Stack
 
 ### Web Application Framework
+
 **Next.js 14 (App Router)**
+
 - **Framework**: React 18 with Next.js 14 App Router
 - **Language**: TypeScript 5.0+ for type safety
 - **Styling**: Tailwind CSS 3.3+ with custom design system
@@ -30,24 +33,27 @@ const nextConfig = {
   experimental: {
     appDir: true,
     serverActions: true,
-    typedRoutes: true
+    typedRoutes: true,
   },
   images: {
     domains: ['images.padelplatform.pk', 'avatars.padelplatform.pk'],
-    formats: ['image/avif', 'image/webp']
+    formats: ['image/avif', 'image/webp'],
   },
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
-    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-  }
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+  },
 };
 
 export default nextConfig;
 ```
 
 ### UI Component Library
+
 **Custom Design System with Tailwind CSS**
+
 - **Base Framework**: Tailwind CSS 3.3+
 - **Component Library**: Custom components built with Radix UI primitives
 - **Icons**: Lucide React for consistent iconography
@@ -63,36 +69,36 @@ export const designTokens = {
       100: '#dbeafe',
       500: '#3b82f6',
       600: '#2563eb',
-      900: '#1e3a8a'
+      900: '#1e3a8a',
     },
     success: {
       50: '#f0fdf4',
       500: '#22c55e',
-      600: '#16a34a'
+      600: '#16a34a',
     },
     warning: {
       50: '#fffbeb',
       500: '#f59e0b',
-      600: '#d97706'
+      600: '#d97706',
     },
     error: {
       50: '#fef2f2',
       500: '#ef4444',
-      600: '#dc2626'
-    }
+      600: '#dc2626',
+    },
   },
   typography: {
     fontFamily: {
       sans: ['Inter', 'system-ui', 'sans-serif'],
-      mono: ['JetBrains Mono', 'monospace']
+      mono: ['JetBrains Mono', 'monospace'],
     },
     fontSize: {
       xs: ['0.75rem', { lineHeight: '1rem' }],
       sm: ['0.875rem', { lineHeight: '1.25rem' }],
       base: ['1rem', { lineHeight: '1.5rem' }],
       lg: ['1.125rem', { lineHeight: '1.75rem' }],
-      xl: ['1.25rem', { lineHeight: '1.75rem' }]
-    }
+      xl: ['1.25rem', { lineHeight: '1.75rem' }],
+    },
   },
   spacing: {
     xs: '0.25rem',
@@ -100,13 +106,15 @@ export const designTokens = {
     md: '1rem',
     lg: '1.5rem',
     xl: '2rem',
-    '2xl': '3rem'
-  }
+    '2xl': '3rem',
+  },
 };
 ```
 
 ### Mobile Application Framework
+
 **React Native with Expo (SDK 50)**
+
 - **Framework**: React Native 0.73+ with Expo SDK 50
 - **Language**: TypeScript with strict mode
 - **Navigation**: React Navigation v6 with type-safe routing
@@ -128,7 +136,7 @@ const config: ExpoConfig = {
   splash: {
     image: './assets/splash.png',
     resizeMode: 'contain',
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
   },
   plugins: [
     'expo-secure-store',
@@ -139,32 +147,32 @@ const config: ExpoConfig = {
       'expo-build-properties',
       {
         ios: {
-          newArchEnabled: true
+          newArchEnabled: true,
         },
         android: {
-          newArchEnabled: true
-        }
-      }
-    ]
+          newArchEnabled: true,
+        },
+      },
+    ],
   ],
   ios: {
     supportsTablet: true,
     bundleIdentifier: 'com.padelplatform.app',
-    buildNumber: '1'
+    buildNumber: '1',
   },
   android: {
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#FFFFFF'
+      backgroundColor: '#FFFFFF',
     },
     package: 'com.padelplatform.app',
-    versionCode: 1
+    versionCode: 1,
   },
   extra: {
     apiUrl: process.env.EXPO_PUBLIC_API_URL,
     stripePublishableKey: process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY,
-    googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY
-  }
+    googleMapsApiKey: process.env.EXPO_PUBLIC_GOOGLE_MAPS_API_KEY,
+  },
 };
 
 export default config;
@@ -175,7 +183,9 @@ export default config;
 ## ⚙️ Backend Technology Stack
 
 ### API Framework & Runtime
+
 **NestJS 10 with Node.js 20**
+
 - **Runtime**: Node.js 20 LTS with ECMAScript modules
 - **Framework**: NestJS 10 with Express adapter
 - **Language**: TypeScript 5.0+ with strict configuration
@@ -192,33 +202,37 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: ['error', 'warn', 'log', 'debug', 'verbose']
+    logger: ['error', 'warn', 'log', 'debug', 'verbose'],
   });
 
   // Global validation pipe
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    disableErrorMessages: process.env.NODE_ENV === 'production'
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      disableErrorMessages: process.env.NODE_ENV === 'production',
+    })
+  );
 
   // API versioning
   app.enableVersioning({
     type: VersioningType.URI,
-    defaultVersion: '1'
+    defaultVersion: '1',
   });
 
   // CORS configuration
   app.enableCors({
     origin: process.env.FRONTEND_URLS?.split(',') || ['http://localhost:3000'],
-    credentials: true
+    credentials: true,
   });
 
   // Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('Padel Platform API')
-    .setDescription('API documentation for Pakistan\'s premier padel booking platform')
+    .setDescription(
+      "API documentation for Pakistan's premier padel booking platform"
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('authentication', 'User authentication and authorization')
@@ -238,9 +252,11 @@ bootstrap();
 ```
 
 ### Microservices Architecture
+
 **Service-Oriented Architecture with Domain Boundaries**
 
 #### Core MVP Services (Phase 1)
+
 1. **Authentication Service**
    - User registration and login
    - JWT token management
@@ -272,13 +288,15 @@ bootstrap();
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: Joi.object({
-        NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .default('development'),
         PORT: Joi.number().default(3001),
         DATABASE_URL: Joi.string().required(),
         REDIS_URL: Joi.string().required(),
         JWT_SECRET: Joi.string().required(),
-        STRIPE_SECRET_KEY: Joi.string().required()
-      })
+        STRIPE_SECRET_KEY: Joi.string().required(),
+      }),
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -288,47 +306,52 @@ bootstrap();
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
         synchronize: configService.get('NODE_ENV') === 'development',
         logging: configService.get('NODE_ENV') === 'development',
-        ssl: configService.get('NODE_ENV') === 'production' ? { rejectUnauthorized: false } : false
+        ssl:
+          configService.get('NODE_ENV') === 'production'
+            ? { rejectUnauthorized: false }
+            : false,
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
     RedisModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         config: {
-          url: configService.get('REDIS_URL')
-        }
+          url: configService.get('REDIS_URL'),
+        },
       }),
-      inject: [ConfigService]
+      inject: [ConfigService],
     }),
     EventEmitterModule.forRoot(),
     UserModule,
     VenueModule,
     BookingModule,
     PaymentModule,
-    NotificationModule
+    NotificationModule,
   ],
   controllers: [],
   providers: [
     {
       provide: APP_GUARD,
-      useClass: JwtAuthGuard
+      useClass: JwtAuthGuard,
     },
     {
       provide: APP_INTERCEPTOR,
-      useClass: LoggingInterceptor
+      useClass: LoggingInterceptor,
     },
     {
       provide: APP_FILTER,
-      useClass: AllExceptionsFilter
-    }
-  ]
+      useClass: AllExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {}
 ```
 
 ### API Design & Communication
+
 **GraphQL Federation with REST Fallback**
+
 - **Primary API**: GraphQL with Apollo Federation
 - **Fallback API**: RESTful endpoints for simple operations
 - **Real-time**: WebSocket with Socket.io for live updates
@@ -345,9 +368,12 @@ const gateway = new ApolloGateway({
       { name: 'users', url: 'http://user-service:4001/graphql' },
       { name: 'users', url: 'http://user-service:3002/graphql' },
       { name: 'bookings', url: 'http://booking-service:3003/graphql' },
-      { name: 'notifications', url: 'http://notification-service:3004/graphql' }
-    ]
-  })
+      {
+        name: 'notifications',
+        url: 'http://notification-service:3004/graphql',
+      },
+    ],
+  }),
 });
 
 const server = new ApolloServer({
@@ -355,8 +381,8 @@ const server = new ApolloServer({
   subscriptions: false,
   context: ({ req }) => ({
     user: req.user,
-    headers: req.headers
-  })
+    headers: req.headers,
+  }),
 });
 ```
 
@@ -365,7 +391,9 @@ const server = new ApolloServer({
 ## 🗄️ Database & Storage Technology
 
 ### Primary Database
+
 **PostgreSQL 15 with Advanced Features**
+
 - **Version**: PostgreSQL 15+ with latest patches
 - **Extensions**: PostGIS for geospatial data, pg_cron for scheduling
 - **ORM**: Prisma 5.0+ with type-safe database access
@@ -395,6 +423,7 @@ CREATE EXTENSION IF NOT EXISTS "btree_gin";
 ```
 
 ### Prisma Schema Configuration
+
 ```prisma
 // schema.prisma
 generator client {
@@ -480,7 +509,9 @@ enum BookingStatus {
 ```
 
 ### Caching Layer
+
 **Redis 7 with Cluster Mode**
+
 - **Version**: Redis 7+ with cluster configuration
 - **Use Cases**: Session storage, API caching, real-time data
 - **Client**: ioredis with connection pooling
@@ -508,7 +539,7 @@ export class CacheService {
       lazyConnect: true,
       keepAlive: 30000,
       connectTimeout: 10000,
-      commandTimeout: 5000
+      commandTimeout: 5000,
     });
   }
 
@@ -540,7 +571,9 @@ export class CacheService {
 ```
 
 ### File Storage
+
 **AWS S3 with CloudFront CDN**
+
 - **Storage**: AWS S3 with versioning and lifecycle policies
 - **CDN**: CloudFront for global content delivery
 - **Image Processing**: Sharp for on-the-fly image optimization
@@ -548,7 +581,11 @@ export class CacheService {
 
 ```typescript
 // File upload service with S3
-import { S3Client, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
@@ -561,20 +598,20 @@ export class FileUploadService {
       region: process.env.AWS_REGION,
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-      }
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
     });
   }
 
   async uploadFile(file: Express.Multer.File, folder: string): Promise<string> {
     const key = `${folder}/${Date.now()}-${file.originalname}`;
-    
+
     const command = new PutObjectCommand({
       Bucket: this.bucketName,
       Key: key,
       Body: file.buffer,
       ContentType: file.mimetype,
-      ACL: 'private'
+      ACL: 'private',
     });
 
     await this.s3Client.send(command);
@@ -584,7 +621,7 @@ export class FileUploadService {
   async getSignedUrl(key: string, expiresIn: number = 3600): Promise<string> {
     const command = new GetObjectCommand({
       Bucket: this.bucketName,
-      Key: key
+      Key: key,
     });
 
     return getSignedUrl(this.s3Client, command, { expiresIn });
@@ -597,10 +634,13 @@ export class FileUploadService {
 ## 💳 Payment Integration Technology
 
 ### Payment Gateways
+
 **Multi-Gateway Payment Processing**
 
 #### International Gateway
+
 **Stripe Connect for Global Payments**
+
 - **Version**: Stripe API 2023-10-16
 - **Features**: Payment intents, webhooks, marketplace functionality
 - **Security**: PCI DSS Level 1 compliance
@@ -617,11 +657,14 @@ export class StripePaymentService {
   constructor() {
     this.stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
       apiVersion: '2023-10-16',
-      typescript: true
+      typescript: true,
     });
   }
 
-  async createPaymentIntent(amount: number, currency: string = 'pkr'): Promise<Stripe.PaymentIntent> {
+  async createPaymentIntent(
+    amount: number,
+    currency: string = 'pkr'
+  ): Promise<Stripe.PaymentIntent> {
     return this.stripe.paymentIntents.create({
       amount: Math.round(amount * 100), // Convert to smallest currency unit
       currency: currency.toLowerCase(),
@@ -629,17 +672,26 @@ export class StripePaymentService {
       capture_method: 'automatic',
       confirmation_method: 'automatic',
       metadata: {
-        platform: 'padel-booking'
-      }
+        platform: 'padel-booking',
+      },
     });
   }
 
-  async handleWebhook(payload: string, signature: string): Promise<Stripe.Event> {
+  async handleWebhook(
+    payload: string,
+    signature: string
+  ): Promise<Stripe.Event> {
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    return this.stripe.webhooks.constructEvent(payload, signature, endpointSecret);
+    return this.stripe.webhooks.constructEvent(
+      payload,
+      signature,
+      endpointSecret
+    );
   }
 
-  async createConnectedAccount(businessInfo: BusinessInfo): Promise<Stripe.Account> {
+  async createConnectedAccount(
+    businessInfo: BusinessInfo
+  ): Promise<Stripe.Account> {
     return this.stripe.accounts.create({
       type: 'express',
       country: 'PK',
@@ -649,21 +701,23 @@ export class StripePaymentService {
         address: {
           line1: businessInfo.address,
           city: businessInfo.city,
-          country: 'PK'
+          country: 'PK',
         },
-        phone: businessInfo.phone
+        phone: businessInfo.phone,
       },
       capabilities: {
         card_payments: { requested: true },
-        transfers: { requested: true }
-      }
+        transfers: { requested: true },
+      },
     });
   }
 }
 ```
 
 #### Local Pakistani Gateways
+
 **EasyPaisa & JazzCash Integration**
+
 - **EasyPaisa**: Direct API integration with mobile wallet
 - **JazzCash**: Payment gateway for mobile payments
 - **Bank Transfers**: Traditional banking integration
@@ -672,37 +726,40 @@ export class StripePaymentService {
 // Local payment gateways service
 @Injectable()
 export class LocalPaymentService {
-  
   // EasyPaisa integration
-  async processEasyPaisaPayment(paymentData: EasyPaisaPaymentDto): Promise<PaymentResult> {
+  async processEasyPaisaPayment(
+    paymentData: EasyPaisaPaymentDto
+  ): Promise<PaymentResult> {
     const payload = {
       amount: paymentData.amount,
       customer_mobile_number: paymentData.mobileNumber,
       merchant_id: process.env.EASYPAYSA_MERCHANT_ID,
       transaction_id: paymentData.transactionId,
-      callback_url: `${process.env.API_URL}/payments/easypaysa/callback`
+      callback_url: `${process.env.API_URL}/payments/easypaysa/callback`,
     };
 
     const response = await fetch(process.env.EASYPAYSA_API_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.EASYPAYSA_API_KEY}`
+        Authorization: `Bearer ${process.env.EASYPAYSA_API_KEY}`,
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     });
 
     const result = await response.json();
-    
+
     return {
       success: result.status === 'SUCCESS',
       transactionId: result.transaction_id,
-      gatewayResponse: result
+      gatewayResponse: result,
     };
   }
 
   // JazzCash integration
-  async processJazzCashPayment(paymentData: JazzCashPaymentDto): Promise<PaymentResult> {
+  async processJazzCashPayment(
+    paymentData: JazzCashPaymentDto
+  ): Promise<PaymentResult> {
     const payload = {
       pp_Amount: paymentData.amount * 100, // Convert to paisa
       pp_CustomerID: paymentData.customerId,
@@ -712,8 +769,11 @@ export class LocalPaymentService {
       pp_ReturnURL: `${process.env.API_URL}/payments/jazzcash/return`,
       pp_Language: 'EN',
       pp_TxnCurrency: 'PKR',
-      pp_TxnDateTime: new Date().toISOString().replace(/[-:]/g, '').split('.')[0],
-      pp_TxnType: 'MWALLET'
+      pp_TxnDateTime: new Date()
+        .toISOString()
+        .replace(/[-:]/g, '')
+        .split('.')[0],
+      pp_TxnType: 'MWALLET',
     };
 
     // Generate secure hash
@@ -723,26 +783,31 @@ export class LocalPaymentService {
     const response = await fetch(process.env.JAZZCASH_API_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: new URLSearchParams(payload).toString()
+      body: new URLSearchParams(payload).toString(),
     });
 
     const result = await response.text();
     const parsed = this.parseJazzCashResponse(result);
-    
+
     return {
       success: parsed.pp_ResponseCode === '000',
       transactionId: parsed.pp_TxnRefNo,
-      gatewayResponse: parsed
+      gatewayResponse: parsed,
     };
   }
 
   private generateJazzCashHash(data: any): string {
     const integritySalt = process.env.JAZZCASH_INTEGRITY_SALT;
     const sortedKeys = Object.keys(data).sort();
-    const hashString = sortedKeys.map(key => data[key]).join('&') + '&' + integritySalt;
-    return crypto.createHash('sha256').update(hashString).digest('hex').toUpperCase();
+    const hashString =
+      sortedKeys.map(key => data[key]).join('&') + '&' + integritySalt;
+    return crypto
+      .createHash('sha256')
+      .update(hashString)
+      .digest('hex')
+      .toUpperCase();
   }
 }
 ```
@@ -752,10 +817,13 @@ export class LocalPaymentService {
 ## 📱 Communication & Notification Technology
 
 ### Multi-Channel Notification System
+
 **Comprehensive Communication Infrastructure**
 
 #### Email Service
+
 **Amazon SES with Template Management**
+
 - **Provider**: Amazon Simple Email Service (SES)
 - **Templates**: Handlebars-based email templates
 - **Analytics**: Open rates, click tracking, bounce handling
@@ -774,49 +842,53 @@ export class EmailService {
       region: process.env.AWS_SES_REGION,
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-      }
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
     });
   }
 
   async sendTemplatedEmail(emailData: TemplatedEmailData): Promise<void> {
     const template = await this.getEmailTemplate(emailData.templateName);
-    const compiledHtml = Handlebars.compile(template.html)(emailData.templateData);
-    const compiledText = Handlebars.compile(template.text)(emailData.templateData);
+    const compiledHtml = Handlebars.compile(template.html)(
+      emailData.templateData
+    );
+    const compiledText = Handlebars.compile(template.text)(
+      emailData.templateData
+    );
 
     const command = new SendEmailCommand({
       FromEmailAddress: process.env.FROM_EMAIL,
       Destination: {
-        ToAddresses: [emailData.to]
+        ToAddresses: [emailData.to],
       },
       Content: {
         Simple: {
           Subject: {
             Data: emailData.subject,
-            Charset: 'UTF-8'
+            Charset: 'UTF-8',
           },
           Body: {
             Html: {
               Data: compiledHtml,
-              Charset: 'UTF-8'
+              Charset: 'UTF-8',
             },
             Text: {
               Data: compiledText,
-              Charset: 'UTF-8'
-            }
-          }
-        }
+              Charset: 'UTF-8',
+            },
+          },
+        },
       },
       Tags: [
         {
           Name: 'template',
-          Value: emailData.templateName
+          Value: emailData.templateName,
         },
         {
           Name: 'category',
-          Value: emailData.category
-        }
-      ]
+          Value: emailData.category,
+        },
+      ],
     });
 
     await this.sesClient.send(command);
@@ -824,13 +896,18 @@ export class EmailService {
 
   private async getEmailTemplate(templateName: string): Promise<EmailTemplate> {
     // Load template from cache or database
-    return this.templateCache.get(templateName) || await this.loadTemplate(templateName);
+    return (
+      this.templateCache.get(templateName) ||
+      (await this.loadTemplate(templateName))
+    );
   }
 }
 ```
 
 #### SMS Service
+
 **Multi-Provider SMS Gateway**
+
 - **Primary**: Twilio for international SMS
 - **Local**: Pakistani SMS providers for local numbers
 - **Features**: Delivery reports, two-way messaging, shortcodes
@@ -853,7 +930,7 @@ export class SmsService {
     try {
       // Determine provider based on phone number
       const provider = this.getProviderForNumber(phoneNumber);
-      
+
       if (provider === 'twilio') {
         return this.sendViaTwilio(phoneNumber, message);
       } else {
@@ -865,17 +942,20 @@ export class SmsService {
     }
   }
 
-  private async sendViaTwilio(phoneNumber: string, message: string): Promise<SmsResult> {
+  private async sendViaTwilio(
+    phoneNumber: string,
+    message: string
+  ): Promise<SmsResult> {
     const result = await this.twilioClient.messages.create({
       body: message,
       from: process.env.TWILIO_PHONE_NUMBER,
-      to: phoneNumber
+      to: phoneNumber,
     });
 
     return {
       success: true,
       messageId: result.sid,
-      provider: 'twilio'
+      provider: 'twilio',
     };
   }
 
@@ -887,7 +967,9 @@ export class SmsService {
 ```
 
 #### WhatsApp Business Integration
+
 **WhatsApp Business API for Rich Communication**
+
 - **Platform**: WhatsApp Business Cloud API
 - **Features**: Template messages, media sharing, interactive buttons
 - **Compliance**: WhatsApp business policy compliant messaging
@@ -900,7 +982,9 @@ export class WhatsAppService {
   private readonly phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
   private readonly accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
 
-  async sendTemplateMessage(data: WhatsAppTemplateData): Promise<WhatsAppResult> {
+  async sendTemplateMessage(
+    data: WhatsAppTemplateData
+  ): Promise<WhatsAppResult> {
     const payload = {
       messaging_product: 'whatsapp',
       to: data.to.replace(/^\+/, ''), // Remove + prefix
@@ -908,10 +992,10 @@ export class WhatsAppService {
       template: {
         name: data.templateName,
         language: {
-          code: data.languageCode || 'en'
+          code: data.languageCode || 'en',
         },
-        components: data.components
-      }
+        components: data.components,
+      },
     };
 
     const response = await fetch(
@@ -919,27 +1003,31 @@ export class WhatsAppService {
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${this.accessToken}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       }
     );
 
     const result = await response.json();
-    
+
     if (!response.ok) {
-      throw new Error(`WhatsApp API error: ${result.error?.message || 'Unknown error'}`);
+      throw new Error(
+        `WhatsApp API error: ${result.error?.message || 'Unknown error'}`
+      );
     }
 
     return {
       success: true,
       messageId: result.messages[0].id,
-      provider: 'whatsapp'
+      provider: 'whatsapp',
     };
   }
 
-  async sendInteractiveMessage(data: WhatsAppInteractiveData): Promise<WhatsAppResult> {
+  async sendInteractiveMessage(
+    data: WhatsAppInteractiveData
+  ): Promise<WhatsAppResult> {
     const payload = {
       messaging_product: 'whatsapp',
       to: data.to.replace(/^\+/, ''),
@@ -948,11 +1036,11 @@ export class WhatsAppService {
         type: data.interactiveType, // 'button' | 'list'
         header: data.header,
         body: {
-          text: data.bodyText
+          text: data.bodyText,
         },
         footer: data.footer,
-        action: data.action
-      }
+        action: data.action,
+      },
     };
 
     const response = await fetch(
@@ -960,10 +1048,10 @@ export class WhatsAppService {
       {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${this.accessToken}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
       }
     );
 
@@ -971,14 +1059,16 @@ export class WhatsAppService {
     return {
       success: response.ok,
       messageId: result.messages?.[0]?.id,
-      provider: 'whatsapp'
+      provider: 'whatsapp',
     };
   }
 }
 ```
 
 ### Real-Time Communication
+
 **WebSocket with Socket.io for Live Updates**
+
 - **Framework**: Socket.io 4.7+ with Redis adapter
 - **Features**: Real-time booking updates, live chat, notifications
 - **Scaling**: Redis adapter for multi-instance deployments
@@ -988,23 +1078,25 @@ export class WhatsAppService {
 @WebSocketGateway({
   cors: {
     origin: process.env.FRONTEND_URLS?.split(',') || ['http://localhost:3000'],
-    credentials: true
+    credentials: true,
   },
-  adapter: createAdapter(redisClient, redisClient.duplicate())
+  adapter: createAdapter(redisClient, redisClient.duplicate()),
 })
-export class BookingGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class BookingGateway
+  implements OnGatewayConnection, OnGatewayDisconnect
+{
   @WebSocketServer() server: Server;
-  
+
   private connectedUsers = new Map<string, string>(); // socketId -> userId
 
   async handleConnection(client: Socket) {
     try {
       const token = client.handshake.auth.token;
       const user = await this.authService.validateWebSocketToken(token);
-      
+
       this.connectedUsers.set(client.id, user.id);
       client.join(`user:${user.id}`);
-      
+
       this.logger.log(`User ${user.id} connected via WebSocket`);
     } catch (error) {
       this.logger.error('WebSocket authentication failed', error);
@@ -1030,12 +1122,12 @@ export class BookingGateway implements OnGatewayConnection, OnGatewayDisconnect 
   emitBookingUpdate(booking: Booking) {
     this.server.to(`venue:${booking.venueId}`).emit('booking-update', {
       type: 'booking_created',
-      booking: booking
+      booking: booking,
     });
 
     this.server.to(`user:${booking.userId}`).emit('booking-notification', {
       type: 'booking_confirmed',
-      booking: booking
+      booking: booking,
     });
   }
 
@@ -1043,7 +1135,7 @@ export class BookingGateway implements OnGatewayConnection, OnGatewayDisconnect 
   emitAvailabilityUpdate(courtId: string, availability: AvailabilityUpdate) {
     this.server.emit('availability-update', {
       courtId,
-      availability
+      availability,
     });
   }
 }
@@ -1054,7 +1146,9 @@ export class BookingGateway implements OnGatewayConnection, OnGatewayDisconnect 
 ## 🔍 Search & Analytics Technology
 
 ### Search Engine
+
 **Elasticsearch 8 for Advanced Search**
+
 - **Version**: Elasticsearch 8.10+ with Kibana dashboard
 - **Features**: Full-text search, geospatial queries, aggregations
 - **Performance**: Sub-100ms search response times
@@ -1073,11 +1167,11 @@ export class SearchService {
       node: process.env.ELASTICSEARCH_URL,
       auth: {
         username: process.env.ELASTICSEARCH_USERNAME,
-        password: process.env.ELASTICSEARCH_PASSWORD
+        password: process.env.ELASTICSEARCH_PASSWORD,
       },
       tls: {
-        rejectUnauthorized: false
-      }
+        rejectUnauthorized: false,
+      },
     });
   }
 
@@ -1090,7 +1184,7 @@ export class SearchService {
         description: venue.description,
         location: {
           lat: venue.latitude,
-          lon: venue.longitude
+          lon: venue.longitude,
         },
         address: venue.address,
         city: venue.city,
@@ -1103,11 +1197,11 @@ export class SearchService {
           type: court.type,
           surface: court.surface,
           indoor: court.isIndoor,
-          basePrice: court.basePrice
+          basePrice: court.basePrice,
         })),
         createdAt: venue.createdAt,
-        updatedAt: venue.updatedAt
-      }
+        updatedAt: venue.updatedAt,
+      },
     });
   }
 
@@ -1116,12 +1210,12 @@ export class SearchService {
       query: {
         bool: {
           must: [],
-          filter: []
-        }
+          filter: [],
+        },
       },
       sort: [],
       size: query.limit || 20,
-      from: query.offset || 0
+      from: query.offset || 0,
     };
 
     // Full-text search
@@ -1130,8 +1224,8 @@ export class SearchService {
         multi_match: {
           query: query.searchText,
           fields: ['name^3', 'description^2', 'address', 'amenities'],
-          fuzziness: 'AUTO'
-        }
+          fuzziness: 'AUTO',
+        },
       });
     }
 
@@ -1142,9 +1236,9 @@ export class SearchService {
           distance: `${query.radius || 10}km`,
           location: {
             lat: query.latitude,
-            lon: query.longitude
-          }
-        }
+            lon: query.longitude,
+          },
+        },
       });
 
       // Add distance sorting
@@ -1152,11 +1246,11 @@ export class SearchService {
         _geo_distance: {
           location: {
             lat: query.latitude,
-            lon: query.longitude
+            lon: query.longitude,
           },
           order: 'asc',
-          unit: 'km'
-        }
+          unit: 'km',
+        },
       });
     }
 
@@ -1171,10 +1265,10 @@ export class SearchService {
           path: 'courts',
           query: {
             range: {
-              'courts.basePrice': priceFilter
-            }
-          }
-        }
+              'courts.basePrice': priceFilter,
+            },
+          },
+        },
       });
     }
 
@@ -1182,8 +1276,8 @@ export class SearchService {
     if (query.amenities && query.amenities.length > 0) {
       searchBody.query.bool.filter.push({
         terms: {
-          amenities: query.amenities
-        }
+          amenities: query.amenities,
+        },
       });
     }
 
@@ -1195,44 +1289,46 @@ export class SearchService {
           ranges: [
             { key: 'budget', to: 1000 },
             { key: 'mid-range', from: 1000, to: 2000 },
-            { key: 'premium', from: 2000 }
-          ]
-        }
+            { key: 'premium', from: 2000 },
+          ],
+        },
       },
       amenities: {
         terms: {
           field: 'amenities',
-          size: 20
-        }
+          size: 20,
+        },
       },
       cities: {
         terms: {
           field: 'city.keyword',
-          size: 10
-        }
-      }
+          size: 10,
+        },
+      },
     };
 
     const response = await this.esClient.search({
       index: 'venues',
-      body: searchBody
+      body: searchBody,
     });
 
     return {
       venues: response.body.hits.hits.map(hit => ({
         ...hit._source,
-        distance: hit.sort?.[0] // Distance from search location
+        distance: hit.sort?.[0], // Distance from search location
       })),
       total: response.body.hits.total.value,
       aggregations: response.body.aggregations,
-      took: response.body.took
+      took: response.body.took,
     };
   }
 }
 ```
 
 ### Analytics & Business Intelligence
+
 **ClickHouse + Apache Superset for Analytics**
+
 - **Data Warehouse**: ClickHouse for high-performance analytics
 - **Visualization**: Apache Superset for business intelligence dashboards
 - **Real-time Processing**: Apache Kafka for event streaming
@@ -1253,15 +1349,15 @@ export class AnalyticsService {
       debug: process.env.NODE_ENV === 'development',
       basicAuth: {
         username: process.env.CLICKHOUSE_USER,
-        password: process.env.CLICKHOUSE_PASSWORD
+        password: process.env.CLICKHOUSE_PASSWORD,
       },
       isUseGzip: true,
       format: 'json',
       config: {
         session_timeout: 60,
         output_format_json_quote_64bit_integers: 0,
-        enable_http_compression: 1
-      }
+        enable_http_compression: 1,
+      },
     });
   }
 
@@ -1275,13 +1371,15 @@ export class AnalyticsService {
       booking_id: event.bookingId || '',
       properties: JSON.stringify(event.properties || {}),
       ip_address: event.ipAddress || '',
-      user_agent: event.userAgent || ''
+      user_agent: event.userAgent || '',
     };
 
     await this.clickhouse.insert('INSERT INTO events', [eventData]);
   }
 
-  async getBookingAnalytics(filters: AnalyticsFilters): Promise<BookingAnalytics> {
+  async getBookingAnalytics(
+    filters: AnalyticsFilters
+  ): Promise<BookingAnalytics> {
     const query = `
       SELECT 
         toStartOfDay(timestamp) as date,
@@ -1302,7 +1400,7 @@ export class AnalyticsService {
     const params = {
       start_date: filters.startDate,
       end_date: filters.endDate,
-      ...(filters.venueId && { venue_id: filters.venueId })
+      ...(filters.venueId && { venue_id: filters.venueId }),
     };
 
     const result = await this.clickhouse.query(query, params);
@@ -1335,7 +1433,9 @@ export class AnalyticsService {
 ## 🔒 Security Technology Stack
 
 ### Authentication & Authorization
+
 **JWT with OAuth 2.0 and RBAC**
+
 - **JWT Library**: @nestjs/jwt with RSA256 signing
 - **OAuth Providers**: Google, Facebook, Apple Sign-In
 - **RBAC**: Role-based access control with fine-grained permissions
@@ -1356,12 +1456,12 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       role: user.role,
-      permissions: user.permissions
+      permissions: user.permissions,
     };
 
     const accessToken = this.jwtService.sign(payload, {
       expiresIn: '15m',
-      algorithm: 'RS256'
+      algorithm: 'RS256',
     });
 
     const refreshToken = this.jwtService.sign(
@@ -1382,7 +1482,7 @@ export class AuthService {
   async validateToken(token: string): Promise<User> {
     try {
       const payload = this.jwtService.verify(token, {
-        algorithms: ['RS256']
+        algorithms: ['RS256'],
       });
 
       const user = await this.userService.findById(payload.sub);
@@ -1399,7 +1499,7 @@ export class AuthService {
   async refreshTokens(refreshToken: string): Promise<AuthTokens> {
     try {
       const payload = this.jwtService.verify(refreshToken, {
-        algorithms: ['RS256']
+        algorithms: ['RS256'],
       });
 
       if (payload.type !== 'refresh') {
@@ -1407,7 +1507,9 @@ export class AuthService {
       }
 
       // Verify token exists in Redis
-      const storedToken = await this.redisService.get(`refresh_token:${payload.sub}`);
+      const storedToken = await this.redisService.get(
+        `refresh_token:${payload.sub}`
+      );
       if (storedToken !== refreshToken) {
         throw new UnauthorizedException('Refresh token not found or expired');
       }
@@ -1422,7 +1524,9 @@ export class AuthService {
 ```
 
 ### Data Encryption & Security
+
 **AES-256 Encryption with Key Management**
+
 - **Encryption**: AES-256-GCM for data at rest
 - **Key Management**: AWS KMS for encryption key management
 - **TLS**: TLS 1.3 for data in transit
@@ -1442,15 +1546,15 @@ export class EncryptionService {
       region: process.env.AWS_REGION,
       credentials: {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-      }
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      },
     });
   }
 
   async encryptSensitiveData(plaintext: string): Promise<string> {
     const command = new EncryptCommand({
       KeyId: this.keyId,
-      Plaintext: Buffer.from(plaintext, 'utf8')
+      Plaintext: Buffer.from(plaintext, 'utf8'),
     });
 
     const response = await this.kmsClient.send(command);
@@ -1459,7 +1563,7 @@ export class EncryptionService {
 
   async decryptSensitiveData(ciphertext: string): Promise<string> {
     const command = new DecryptCommand({
-      CiphertextBlob: Buffer.from(ciphertext, 'base64')
+      CiphertextBlob: Buffer.from(ciphertext, 'base64'),
     });
 
     const response = await this.kmsClient.send(command);
@@ -1473,7 +1577,7 @@ export class EncryptionService {
       memoryCost: 2 ** 16, // 64 MB
       timeCost: 3,
       parallelism: 1,
-      salt
+      salt,
     });
     return hash;
   }
@@ -1493,7 +1597,9 @@ export class EncryptionService {
 ## 🚀 DevOps & Infrastructure Technology
 
 ### Containerization & Orchestration
+
 **Docker + Kubernetes for Container Orchestration**
+
 - **Container Runtime**: Docker 24+ with multi-stage builds
 - **Orchestration**: Kubernetes 1.28+ with Helm charts
 - **Service Mesh**: Istio for traffic management and security
@@ -1551,7 +1657,9 @@ CMD ["node", "dist/main.js"]
 ```
 
 ### CI/CD Pipeline
+
 **GitHub Actions with Multi-Environment Deployment**
+
 - **CI/CD**: GitHub Actions with reusable workflows
 - **Testing**: Automated testing with coverage reports
 - **Security**: Vulnerability scanning with Snyk and CodeQL
@@ -1574,7 +1682,7 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -1588,7 +1696,7 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-      
+
       redis:
         image: redis:7-alpine
         options: >-
@@ -1721,7 +1829,9 @@ jobs:
 ```
 
 ### Monitoring & Observability
+
 **Prometheus + Grafana + Jaeger Stack**
+
 - **Metrics**: Prometheus for metrics collection and alerting
 - **Visualization**: Grafana dashboards for monitoring
 - **Tracing**: Jaeger for distributed tracing
@@ -1729,38 +1839,42 @@ jobs:
 
 ```typescript
 // Prometheus metrics configuration
-import { makeCounterProvider, makeHistogramProvider, makeGaugeProvider } from '@willsoto/nestjs-prometheus';
+import {
+  makeCounterProvider,
+  makeHistogramProvider,
+  makeGaugeProvider,
+} from '@willsoto/nestjs-prometheus';
 
 export const metricsProviders = [
   makeCounterProvider({
     name: 'http_requests_total',
     help: 'Total number of HTTP requests',
-    labelNames: ['method', 'route', 'status_code']
+    labelNames: ['method', 'route', 'status_code'],
   }),
   makeHistogramProvider({
     name: 'http_request_duration_seconds',
     help: 'HTTP request duration in seconds',
     labelNames: ['method', 'route', 'status_code'],
-    buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10]
+    buckets: [0.1, 0.3, 0.5, 0.7, 1, 3, 5, 7, 10],
   }),
   makeGaugeProvider({
     name: 'active_connections',
     help: 'Number of active connections',
-    labelNames: ['type']
+    labelNames: ['type'],
   }),
   makeCounterProvider({
     name: 'booking_events_total',
     help: 'Total number of booking events',
-    labelNames: ['event_type', 'venue_id']
+    labelNames: ['event_type', 'venue_id'],
   }),
   makeGaugeProvider({
     name: 'revenue_total',
     help: 'Total revenue in PKR',
-    labelNames: ['period']
-  })
+    labelNames: ['period'],
+  }),
 ];
 ```
 
 ---
 
-*This comprehensive technology stack provides the foundation for building a scalable, secure, and maintainable padel booking platform that can handle high traffic, complex business logic, and rapid feature development while maintaining excellent performance and user experience.*
+_This comprehensive technology stack provides the foundation for building a scalable, secure, and maintainable padel booking platform that can handle high traffic, complex business logic, and rapid feature development while maintaining excellent performance and user experience._

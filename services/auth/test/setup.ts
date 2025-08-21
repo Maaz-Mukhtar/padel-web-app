@@ -26,7 +26,7 @@ global.mockUser = {
   role: 'player',
   isVerified: true,
   createdAt: new Date(),
-  updatedAt: new Date()
+  updatedAt: new Date(),
 };
 
 global.mockJwtPayload = {
@@ -34,7 +34,7 @@ global.mockJwtPayload = {
   email: 'test@example.com',
   role: 'player',
   iat: Math.floor(Date.now() / 1000),
-  exp: Math.floor(Date.now() / 1000) + 3600
+  exp: Math.floor(Date.now() / 1000) + 3600,
 };
 
 // Setup and teardown

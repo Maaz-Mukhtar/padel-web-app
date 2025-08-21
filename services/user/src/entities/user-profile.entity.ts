@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('user_profiles')
 export class UserProfile {
@@ -11,7 +17,11 @@ export class UserProfile {
   @Column({ type: 'text', nullable: true })
   bio: string;
 
-  @Column({ type: 'enum', enum: ['beginner', 'intermediate', 'advanced', 'professional'], nullable: true })
+  @Column({
+    type: 'enum',
+    enum: ['beginner', 'intermediate', 'advanced', 'professional'],
+    nullable: true,
+  })
   skillLevel: string;
 
   @Column({ nullable: true })

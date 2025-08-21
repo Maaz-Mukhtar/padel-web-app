@@ -19,6 +19,7 @@ The Padel Platform is a digital ecosystem for sports facility booking, connectin
 ## 🏗️ Architecture
 
 ### Microservices Architecture
+
 ```
 ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
 │  Auth Service   │  │  User Service   │  │ Booking Service │  │Notification Svc │
@@ -36,6 +37,7 @@ The Padel Platform is a digital ecosystem for sports facility booking, connectin
 ### Tech Stack
 
 **Backend Services:**
+
 - **NestJS 10** - Enterprise-grade Node.js framework
 - **PostgreSQL 15** - Primary database with PostGIS for location data
 - **Redis 7** - Caching and session management
@@ -43,12 +45,14 @@ The Padel Platform is a digital ecosystem for sports facility booking, connectin
 - **Prisma 5** - Database ORM and migrations
 
 **Frontend:**
+
 - **Next.js 14** - React framework with app router
 - **TypeScript** - Type safety across the stack
 - **Tailwind CSS** - Utility-first styling
 - **React Query** - State management and caching
 
 **Infrastructure:**
+
 - **Docker** - Containerization
 - **Kubernetes** - Orchestration
 - **Nginx** - Reverse proxy and load balancing
@@ -59,7 +63,8 @@ The Padel Platform is a digital ecosystem for sports facility booking, connectin
 ### Prerequisites
 
 Ensure you have the following installed:
-- **Node.js 20+** 
+
+- **Node.js 20+**
 - **npm 10+**
 - **Docker & Docker Compose**
 - **Git**
@@ -67,33 +72,39 @@ Ensure you have the following installed:
 ### Development Setup
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/Maaz-Mukhtar/padel-web-app.git
 cd padel-web-app
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 3. **Setup environment**
+
 ```bash
 cp .env.example .env.development
 # Edit .env.development with your configuration
 ```
 
 4. **Start infrastructure services**
+
 ```bash
 npm run docker:dev
 ```
 
 5. **Start all microservices**
+
 ```bash
 npm run dev
 ```
 
 6. **Access the application**
+
 - **Frontend**: http://localhost:3000
 - **Auth Service**: http://localhost:3001/api/docs
 - **User Service**: http://localhost:3002/api/docs
@@ -146,31 +157,36 @@ padel-platform/
 
 The project follows a **vertical slicing methodology** across 14 weeks:
 
-### Phase 1: Foundation (Weeks 1-4) 
+### Phase 1: Foundation (Weeks 1-4)
+
 - ✅ **Week 1**: Project setup and infrastructure
 - 🔄 **Week 2**: Authentication and user profiles
 - ⏳ **Week 3**: Core booking system
 - ⏳ **Week 4**: Payment integration
 
 ### Phase 2: Enhancement (Weeks 5-8)
+
 - ⏳ Local payment gateways (EasyPaisa, JazzCash)
 - ⏳ Social features and group booking
 - ⏳ Notification system
 - ⏳ Mobile optimization
 
 ### Phase 3: Scale (Weeks 9-12)
+
 - ⏳ Tournament management
 - ⏳ Advanced search and analytics
 - ⏳ Performance optimization
 - ⏳ Security hardening
 
 ### Phase 4: Launch (Weeks 13-14)
+
 - ⏳ Production deployment
 - ⏳ Go-to-market execution
 
 ## 🛠️ Available Scripts
 
 ### Root Level
+
 ```bash
 npm run dev              # Start all services in development
 npm run build            # Build all services and frontend
@@ -182,6 +198,7 @@ npm run db:migrate       # Run database migrations
 ```
 
 ### Service Level
+
 ```bash
 # From any service directory (services/auth, services/user, etc.)
 npm run dev              # Start service in watch mode
@@ -190,16 +207,17 @@ npm run test             # Run service tests
 npm run db:migrate       # Run service database migrations
 ```
 
-
 ## 🚀 Deployment
 
 ### Development Environment
+
 ```bash
 npm run docker:dev       # Start with Docker Compose
 npm run dev              # Start all services
 ```
 
 ### Production Deployment
+
 ```bash
 # Using Kubernetes
 kubectl apply -f infrastructure/kubernetes/production/
@@ -210,6 +228,7 @@ kubectl apply -f infrastructure/kubernetes/production/
 We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.md) for details.
 
 ### Development Workflow
+
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
 3. Make your changes
@@ -223,7 +242,7 @@ We welcome contributions! Please see our [Contributing Guide](docs/CONTRIBUTING.
 Each service provides interactive API documentation via Swagger:
 
 - **Auth Service**: http://localhost:3001/api/docs
-- **User Service**: http://localhost:3002/api/docs  
+- **User Service**: http://localhost:3002/api/docs
 - **Booking Service**: http://localhost:3003/api/docs
 - **Notification Service**: http://localhost:3004/api/docs
 

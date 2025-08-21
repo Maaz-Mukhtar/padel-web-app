@@ -2,12 +2,19 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { MetricsService, createMetricsMiddleware, createMetricsHandler } from '../../../shared/utils/metrics';
-import { CustomLogger, createLoggingMiddleware } from '../../../shared/utils/logger';
+import {
+  MetricsService,
+  createMetricsMiddleware,
+  createMetricsHandler,
+} from '../../../shared/utils/metrics';
+import {
+  CustomLogger,
+  createLoggingMiddleware,
+} from '../../../shared/utils/logger';
 
 async function bootstrap() {
   const serviceName = 'auth-service';
-  
+
   // Initialize monitoring and logging
   const metricsService = new MetricsService(serviceName);
   const logger = new CustomLogger(serviceName, 'Bootstrap');
@@ -18,7 +25,7 @@ async function bootstrap() {
 
   // Add correlation ID and logging middleware
   app.use(createLoggingMiddleware(logger));
-  
+
   // Add metrics middleware
   app.use(createMetricsMiddleware(metricsService, serviceName));
 
@@ -31,7 +38,7 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-    }),
+    })
   );
 
   // API versioning
@@ -49,7 +56,9 @@ async function bootstrap() {
   // Swagger documentation
   const config = new DocumentBuilder()
     .setTitle('Padel Platform - Authentication Service')
-    .setDescription('User authentication and authorization API for Pakistan\'s premier padel booking platform')
+    .setDescription(
+      "User authentication and authorization API for Pakistan's premier padel booking platform"
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('authentication', 'User registration, login, and token management')
@@ -63,7 +72,7 @@ async function bootstrap() {
 
   const port = process.env.AUTH_SERVICE_PORT || 3001;
   await app.listen(port);
-  
+
   logger.log(`🚀 Authentication Service running on port ${port}`);
   logger.log(`📖 API Documentation: http://localhost:${port}/api/docs`);
   logger.log(`📊 Metrics endpoint: http://localhost:${port}/metrics`);

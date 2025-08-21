@@ -129,15 +129,13 @@ describe('Auth Service Integration Tests', () => {
 
     beforeEach(async () => {
       // Register a user for login tests
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: loginCredentials.email,
-          password: loginCredentials.password,
-          firstName: 'Test',
-          lastName: 'User',
-          phone: '+923001234567',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: loginCredentials.email,
+        password: loginCredentials.password,
+        firstName: 'Test',
+        lastName: 'User',
+        phone: '+923001234567',
+      });
     });
 
     it('should login with valid credentials', async () => {
@@ -186,15 +184,13 @@ describe('Auth Service Integration Tests', () => {
 
     beforeEach(async () => {
       // Register and login to get a token
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'password123',
-          firstName: 'Test',
-          lastName: 'User',
-          phone: '+923001234567',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'test@example.com',
+        password: 'password123',
+        firstName: 'Test',
+        lastName: 'User',
+        phone: '+923001234567',
+      });
 
       const loginResponse = await request(app.getHttpServer())
         .post('/auth/login')
@@ -236,15 +232,13 @@ describe('Auth Service Integration Tests', () => {
 
     beforeEach(async () => {
       // Register and login to get a token
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'password123',
-          firstName: 'Test',
-          lastName: 'User',
-          phone: '+923001234567',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'test@example.com',
+        password: 'password123',
+        firstName: 'Test',
+        lastName: 'User',
+        phone: '+923001234567',
+      });
 
       const loginResponse = await request(app.getHttpServer())
         .post('/auth/login')
@@ -293,15 +287,13 @@ describe('Auth Service Integration Tests', () => {
   describe('Database Integration', () => {
     it('should hash passwords before storing', async () => {
       const password = 'password123';
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'test@example.com',
-          password,
-          firstName: 'Test',
-          lastName: 'User',
-          phone: '+923001234567',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'test@example.com',
+        password,
+        firstName: 'Test',
+        lastName: 'User',
+        phone: '+923001234567',
+      });
 
       const user = await dataSource.query(
         'SELECT password FROM users WHERE email = $1',
@@ -313,14 +305,12 @@ describe('Auth Service Integration Tests', () => {
     });
 
     it('should set correct default values', async () => {
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'test@example.com',
-          password: 'password123',
-          firstName: 'Test',
-          lastName: 'User',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'test@example.com',
+        password: 'password123',
+        firstName: 'Test',
+        lastName: 'User',
+      });
 
       const user = await dataSource.query(
         'SELECT * FROM users WHERE email = $1',
@@ -356,15 +346,13 @@ describe('Auth Service Integration Tests', () => {
 
     it('should handle login within acceptable time', async () => {
       // First register a user
-      await request(app.getHttpServer())
-        .post('/auth/register')
-        .send({
-          email: 'performance@example.com',
-          password: 'password123',
-          firstName: 'Performance',
-          lastName: 'Test',
-          phone: '+923001234567',
-        });
+      await request(app.getHttpServer()).post('/auth/register').send({
+        email: 'performance@example.com',
+        password: 'password123',
+        firstName: 'Performance',
+        lastName: 'Test',
+        phone: '+923001234567',
+      });
 
       const startTime = Date.now();
 

@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 
 @Entity('users')
@@ -28,7 +34,11 @@ export class User {
   @Column({ nullable: true })
   verificationToken: string;
 
-  @Column({ type: 'enum', enum: ['player', 'venue_owner', 'admin'], default: 'player' })
+  @Column({
+    type: 'enum',
+    enum: ['player', 'venue_owner', 'admin'],
+    default: 'player',
+  })
   role: string;
 
   @CreateDateColumn()

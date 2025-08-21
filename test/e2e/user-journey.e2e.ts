@@ -1,7 +1,5 @@
 import request from 'supertest';
-import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 
 describe('End-to-End User Journey Tests', () => {
@@ -187,7 +185,9 @@ describe('End-to-End User Journey Tests', () => {
         })
         .expect(401);
 
-      expect(invalidLoginResponse.body.message).toContain('Invalid credentials');
+      expect(invalidLoginResponse.body.message).toContain(
+        'Invalid credentials'
+      );
 
       // Test successful login
       const validLoginResponse = await request(app.getHttpServer())
@@ -228,7 +228,7 @@ describe('End-to-End User Journey Tests', () => {
       const registrationResponse = await request(app.getHttpServer())
         .post('/api/auth/register')
         .send(testUser);
-      
+
       userId = registrationResponse.body.id;
 
       const loginResponse = await request(app.getHttpServer())
@@ -257,7 +257,7 @@ describe('End-to-End User Journey Tests', () => {
         .send(profileData)
         .expect(201);
 
-      const profileId = createResponse.body.id;
+      const _profileId = createResponse.body.id;
 
       // Update skill level progression
       const skillUpdate = {
@@ -388,7 +388,9 @@ describe('End-to-End User Journey Tests', () => {
       // Verify all registrations succeeded
       responses.forEach((response, index) => {
         expect(response.status).toBe(201);
-        expect(response.body.email).toBe(`concurrent.user.${index}@example.com`);
+        expect(response.body.email).toBe(
+          `concurrent.user.${index}@example.com`
+        );
       });
     });
 
@@ -409,11 +411,13 @@ describe('End-to-End User Journey Tests', () => {
       const testUserId = registrationResponse.body.id;
 
       // Create multiple concurrent profile requests
-      const profileRequests = Array(20).fill(null).map(() =>
-        request(app.getHttpServer())
-          .get(`/api/users/profile/${testUserId}`)
-          .set('Authorization', `Bearer ${token}`)
-      );
+      const profileRequests = Array(20)
+        .fill(null)
+        .map(() =>
+          request(app.getHttpServer())
+            .get(`/api/users/profile/${testUserId}`)
+            .set('Authorization', `Bearer ${token}`)
+        );
 
       const startTime = Date.now();
       const profileResponses = await Promise.all(profileRequests);
@@ -436,10 +440,8 @@ describe('End-to-End User Journey Tests', () => {
       // This test would involve simulating database failures
       // In a real implementation, you might temporarily disconnect the database
       // or use a mock that returns errors
-
       // Test registration with database error
       // (Implementation would depend on your error handling strategy)
-      
       // Verify proper error responses
       // Verify system remains stable
       // Verify recovery after database is restored
@@ -473,7 +475,7 @@ describe('End-to-End User Journey Tests', () => {
       authToken = loginResponse.body.access_token;
 
       // Create profile (user service)
-      const profileResponse = await request(app.getHttpServer())
+      const _profileResponse = await request(app.getHttpServer())
         .post('/api/users/profile')
         .set('Authorization', `Bearer ${authToken}`)
         .send({

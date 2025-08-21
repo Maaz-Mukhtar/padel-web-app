@@ -5,7 +5,7 @@ import { ConflictException, UnauthorizedException } from '@nestjs/common';
 
 describe('AuthController', () => {
   let authController: AuthController;
-  let authService: AuthService;
+  let _authService: AuthService;
 
   const mockAuthService = {
     validateUser: jest.fn(),
@@ -38,7 +38,7 @@ describe('AuthController', () => {
     }).compile();
 
     authController = module.get<AuthController>(AuthController);
-    authService = module.get<AuthService>(AuthService);
+    _authService = module.get<AuthService>(AuthService);
   });
 
   afterEach(() => {
@@ -65,7 +65,7 @@ describe('AuthController', () => {
       expect(result).toEqual(expectedResult);
       expect(mockAuthService.validateUser).toHaveBeenCalledWith(
         loginDto.email,
-        loginDto.password,
+        loginDto.password
       );
       expect(mockAuthService.login).toHaveBeenCalledWith(mockUser);
     });
@@ -74,11 +74,11 @@ describe('AuthController', () => {
       mockAuthService.validateUser.mockResolvedValue(null);
 
       await expect(authController.login(loginDto)).rejects.toThrow(
-        UnauthorizedException,
+        UnauthorizedException
       );
       expect(mockAuthService.validateUser).toHaveBeenCalledWith(
         loginDto.email,
-        loginDto.password,
+        loginDto.password
       );
       expect(mockAuthService.login).not.toHaveBeenCalled();
     });
@@ -111,11 +111,11 @@ describe('AuthController', () => {
 
     it('should throw ConflictException when user already exists', async () => {
       mockAuthService.register.mockRejectedValue(
-        new ConflictException('User already exists'),
+        new ConflictException('User already exists')
       );
 
       await expect(authController.register(registerDto)).rejects.toThrow(
-        ConflictException,
+        ConflictException
       );
       expect(mockAuthService.register).toHaveBeenCalledWith(registerDto);
     });
@@ -137,20 +137,20 @@ describe('AuthController', () => {
 
       expect(result).toEqual(expectedResult);
       expect(mockAuthService.refreshToken).toHaveBeenCalledWith(
-        refreshTokenDto.refreshToken,
+        refreshTokenDto.refreshToken
       );
     });
 
     it('should throw UnauthorizedException for invalid refresh token', async () => {
       mockAuthService.refreshToken.mockRejectedValue(
-        new UnauthorizedException('Invalid refresh token'),
+        new UnauthorizedException('Invalid refresh token')
       );
 
-      await expect(authController.refreshToken(refreshTokenDto)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        authController.refreshToken(refreshTokenDto)
+      ).rejects.toThrow(UnauthorizedException);
       expect(mockAuthService.refreshToken).toHaveBeenCalledWith(
-        refreshTokenDto.refreshToken,
+        refreshTokenDto.refreshToken
       );
     });
   });
@@ -175,20 +175,20 @@ describe('AuthController', () => {
 
       expect(result).toEqual(expectedPayload);
       expect(mockAuthService.verifyToken).toHaveBeenCalledWith(
-        verifyTokenDto.token,
+        verifyTokenDto.token
       );
     });
 
     it('should throw UnauthorizedException for invalid token', async () => {
       mockAuthService.verifyToken.mockRejectedValue(
-        new UnauthorizedException('Invalid token'),
+        new UnauthorizedException('Invalid token')
       );
 
       await expect(authController.verifyToken(verifyTokenDto)).rejects.toThrow(
-        UnauthorizedException,
+        UnauthorizedException
       );
       expect(mockAuthService.verifyToken).toHaveBeenCalledWith(
-        verifyTokenDto.token,
+        verifyTokenDto.token
       );
     });
   });

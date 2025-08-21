@@ -5,7 +5,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 describe('ProfileController', () => {
   let profileController: ProfileController;
-  let profileService: ProfileService;
+  let _profileService: ProfileService;
 
   const mockProfileService = {
     createProfile: jest.fn(),
@@ -52,7 +52,7 @@ describe('ProfileController', () => {
     }).compile();
 
     profileController = module.get<ProfileController>(ProfileController);
-    profileService = module.get<ProfileService>(ProfileService);
+    _profileService = module.get<ProfileService>(ProfileService);
   });
 
   afterEach(() => {
@@ -74,16 +74,18 @@ describe('ProfileController', () => {
       const result = await profileController.createProfile(createProfileDto);
 
       expect(result).toEqual(mockUserProfile);
-      expect(mockProfileService.createProfile).toHaveBeenCalledWith(createProfileDto);
+      expect(mockProfileService.createProfile).toHaveBeenCalledWith(
+        createProfileDto
+      );
     });
 
     it('should throw BadRequestException when profile already exists', async () => {
       mockProfileService.createProfile.mockRejectedValue(
-        new BadRequestException('Profile already exists'),
+        new BadRequestException('Profile already exists')
       );
 
       await expect(
-        profileController.createProfile(createProfileDto),
+        profileController.createProfile(createProfileDto)
       ).rejects.toThrow(BadRequestException);
     });
   });
@@ -102,11 +104,11 @@ describe('ProfileController', () => {
     it('should throw NotFoundException when profile does not exist', async () => {
       const userId = 'non-existent-user';
       mockProfileService.getProfile.mockRejectedValue(
-        new NotFoundException('Profile not found'),
+        new NotFoundException('Profile not found')
       );
 
       await expect(profileController.getProfile(userId)).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });
@@ -121,26 +123,29 @@ describe('ProfileController', () => {
     it('should update user profile', async () => {
       const userId = 'user-id-123';
       const updatedProfile = { ...mockUserProfile, ...updateProfileDto };
-      
+
       mockProfileService.updateProfile.mockResolvedValue(updatedProfile);
 
-      const result = await profileController.updateProfile(userId, updateProfileDto);
+      const result = await profileController.updateProfile(
+        userId,
+        updateProfileDto
+      );
 
       expect(result).toEqual(updatedProfile);
       expect(mockProfileService.updateProfile).toHaveBeenCalledWith(
         userId,
-        updateProfileDto,
+        updateProfileDto
       );
     });
 
     it('should throw NotFoundException when profile does not exist', async () => {
       const userId = 'non-existent-user';
       mockProfileService.updateProfile.mockRejectedValue(
-        new NotFoundException('Profile not found'),
+        new NotFoundException('Profile not found')
       );
 
       await expect(
-        profileController.updateProfile(userId, updateProfileDto),
+        profileController.updateProfile(userId, updateProfileDto)
       ).rejects.toThrow(NotFoundException);
     });
   });
@@ -158,11 +163,11 @@ describe('ProfileController', () => {
     it('should throw NotFoundException when profile does not exist', async () => {
       const userId = 'non-existent-user';
       mockProfileService.deleteProfile.mockRejectedValue(
-        new NotFoundException('Profile not found'),
+        new NotFoundException('Profile not found')
       );
 
       await expect(profileController.deleteProfile(userId)).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });
@@ -233,7 +238,10 @@ describe('ProfileController', () => {
       const result = await profileController.updateStats(userId, statsDto);
 
       expect(result).toEqual(updatedProfile);
-      expect(mockProfileService.updateStats).toHaveBeenCalledWith(userId, statsDto);
+      expect(mockProfileService.updateStats).toHaveBeenCalledWith(
+        userId,
+        statsDto
+      );
     });
   });
 
@@ -253,12 +261,15 @@ describe('ProfileController', () => {
 
       mockProfileService.updateAchievements.mockResolvedValue(updatedProfile);
 
-      const result = await profileController.updateAchievements(userId, achievementsDto);
+      const result = await profileController.updateAchievements(
+        userId,
+        achievementsDto
+      );
 
       expect(result).toEqual(updatedProfile);
       expect(mockProfileService.updateAchievements).toHaveBeenCalledWith(
         userId,
-        achievementsDto,
+        achievementsDto
       );
     });
   });
@@ -283,7 +294,7 @@ describe('ProfileController', () => {
       expect(result).toEqual(updatedProfile);
       expect(mockProfileService.updateRating).toHaveBeenCalledWith(
         userId,
-        ratingDto.rating,
+        ratingDto.rating
       );
     });
 
@@ -292,11 +303,11 @@ describe('ProfileController', () => {
       const invalidRatingDto = { rating: 6.0 };
 
       mockProfileService.updateRating.mockRejectedValue(
-        new BadRequestException('Invalid rating value'),
+        new BadRequestException('Invalid rating value')
       );
 
       await expect(
-        profileController.updateRating(userId, invalidRatingDto),
+        profileController.updateRating(userId, invalidRatingDto)
       ).rejects.toThrow(BadRequestException);
     });
   });
@@ -330,12 +341,15 @@ describe('ProfileController', () => {
       const updatedProfile = { ...mockUserProfile, ...updateDto };
       mockProfileService.updateProfile.mockResolvedValue(updatedProfile);
 
-      const result = await profileController.updateMyProfile(request, updateDto);
+      const result = await profileController.updateMyProfile(
+        request,
+        updateDto
+      );
 
       expect(result).toEqual(updatedProfile);
       expect(mockProfileService.updateProfile).toHaveBeenCalledWith(
         'user-id-123',
-        updateDto,
+        updateDto
       );
     });
   });

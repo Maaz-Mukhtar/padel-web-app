@@ -10,10 +10,12 @@ const PORT = process.env.API_GATEWAY_PORT || 3000;
 
 // Middleware
 app.use(helmet());
-app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    credentials: true,
+  })
+);
 app.use(morgan('combined'));
 app.use(express.json());
 
@@ -22,11 +24,11 @@ app.use(createMetricsMiddleware('api-gateway'));
 
 // Health check
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'healthy', 
+  res.json({
+    status: 'healthy',
     timestamp: new Date().toISOString(),
     service: 'api-gateway',
-    version: '1.0.0'
+    version: '1.0.0',
   });
 });
 
@@ -38,22 +40,22 @@ const services = [
   {
     route: '/api/auth',
     target: `http://localhost:${process.env.AUTH_SERVICE_PORT || 3001}`,
-    name: 'Auth Service'
+    name: 'Auth Service',
   },
   {
     route: '/api/users',
     target: `http://localhost:${process.env.USER_SERVICE_PORT || 3002}`,
-    name: 'User Service'
+    name: 'User Service',
   },
   {
     route: '/api/bookings',
     target: `http://localhost:${process.env.BOOKING_SERVICE_PORT || 3003}`,
-    name: 'Booking Service'
+    name: 'Booking Service',
   },
   {
     route: '/api/notifications',
     target: `http://localhost:${process.env.NOTIFICATION_SERVICE_PORT || 3004}`,
-    name: 'Notification Service'
+    name: 'Notification Service',
   },
 ];
 
@@ -68,18 +70,20 @@ services.forEach(({ route, target, name }) => {
         [`^${route}`]: '',
       },
       on: {
-        error: (err: any, req: any, res: any) => {
+        error: (err: any, _req: any, res: any) => {
           console.error(`Error proxying to ${name} (${target}):`, err.message);
           if (!res.headersSent) {
-            res.status(502).json({ 
+            res.status(502).json({
               error: 'Service temporarily unavailable',
               service: name,
-              message: `Cannot connect to ${name}`
+              message: `Cannot connect to ${name}`,
             });
           }
         },
-        proxyReq: (proxyReq: any, req: any, res: any) => {
-          console.log(`[API Gateway] Proxying ${req.method} ${req.url} to ${name} (${target})`);
+        proxyReq: (_proxyReq: any, req: any, _res: any) => {
+          console.log(
+            `[API Gateway] Proxying ${req.method} ${req.url} to ${name} (${target})`
+          );
         },
       },
       timeout: 30000, // 30 second timeout
@@ -94,9 +98,9 @@ app.get('/api/status', (req, res) => {
     services: services.map(service => ({
       name: service.name,
       route: service.route,
-      target: service.target
+      target: service.target,
     })),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -106,19 +110,26 @@ app.use('*', (req, res) => {
     error: 'Endpoint not found',
     path: req.originalUrl,
     method: req.method,
-    available_routes: services.map(s => s.route)
+    available_routes: services.map(s => s.route),
   });
 });
 
 // Global error handling middleware
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('Gateway Error:', err.stack);
-  res.status(500).json({ 
-    error: 'Internal server error',
-    message: err.message,
-    timestamp: new Date().toISOString()
-  });
-});
+app.use(
+  (
+    err: any,
+    _req: express.Request,
+    res: express.Response,
+    _next: express.NextFunction
+  ) => {
+    console.error('Gateway Error:', err.stack);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: err.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+);
 
 // Start the server
 app.listen(PORT, () => {

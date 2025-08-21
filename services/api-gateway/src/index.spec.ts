@@ -4,17 +4,17 @@ import express from 'express';
 // Mock the actual gateway setup
 const createTestApp = () => {
   const app = express();
-  
+
   // Basic middleware
   app.use(express.json());
-  
+
   // Health check endpoint
   app.get('/health', (req, res) => {
-    res.json({ 
-      status: 'healthy', 
+    res.json({
+      status: 'healthy',
       timestamp: new Date().toISOString(),
       service: 'api-gateway',
-      version: '1.0.0'
+      version: '1.0.0',
     });
   });
 
@@ -36,10 +36,17 @@ const createTestApp = () => {
   });
 
   // Error handling middleware
-  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Internal server error' });
-  });
+  app.use(
+    (
+      err: any,
+      _req: express.Request,
+      res: express.Response,
+      _next: express.NextFunction
+    ) => {
+      console.error(err.stack);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  );
 
   return app;
 };
@@ -53,9 +60,7 @@ describe('API Gateway', () => {
 
   describe('Health Check', () => {
     it('should return gateway health status', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body).toEqual({
         status: 'healthy',
@@ -66,9 +71,7 @@ describe('API Gateway', () => {
     });
 
     it('should return valid timestamp in health check', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       const timestamp = new Date(response.body.timestamp);
       expect(timestamp.getTime()).toBeGreaterThan(Date.now() - 1000); // Within last second
@@ -77,9 +80,7 @@ describe('API Gateway', () => {
 
   describe('Service Routing', () => {
     it('should route to auth service', async () => {
-      const response = await request(app)
-        .get('/api/auth/health')
-        .expect(200);
+      const response = await request(app).get('/api/auth/health').expect(200);
 
       expect(response.body).toEqual({
         service: 'auth',
@@ -88,9 +89,7 @@ describe('API Gateway', () => {
     });
 
     it('should route to user service', async () => {
-      const response = await request(app)
-        .get('/api/users/health')
-        .expect(200);
+      const response = await request(app).get('/api/users/health').expect(200);
 
       expect(response.body).toEqual({
         service: 'user',
@@ -123,13 +122,11 @@ describe('API Gateway', () => {
 
   describe('Error Handling', () => {
     it('should handle 404 for non-existent routes', async () => {
-      await request(app)
-        .get('/api/non-existent')
-        .expect(404);
+      await request(app).get('/api/non-existent').expect(404);
     });
 
     it('should handle invalid JSON requests', async () => {
-      const response = await request(app)
+      await request(app)
         .post('/api/auth/login')
         .send('invalid-json')
         .set('Content-Type', 'application/json')
@@ -139,9 +136,7 @@ describe('API Gateway', () => {
 
   describe('CORS', () => {
     it('should include CORS headers in responses', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       // Note: In a real implementation, you would check for actual CORS headers
       expect(response.headers).toBeDefined();
@@ -163,22 +158,20 @@ describe('API Gateway', () => {
   describe('Performance', () => {
     it('should respond to health check quickly', async () => {
       const startTime = Date.now();
-      
-      await request(app)
-        .get('/health')
-        .expect(200);
+
+      await request(app).get('/health').expect(200);
 
       const duration = Date.now() - startTime;
       expect(duration).toBeLessThan(100); // Should respond within 100ms
     });
 
     it('should handle multiple concurrent requests', async () => {
-      const requests = Array(10).fill(null).map(() =>
-        request(app).get('/health').expect(200)
-      );
+      const requests = Array(10)
+        .fill(null)
+        .map(() => request(app).get('/health').expect(200));
 
       const responses = await Promise.all(requests);
-      
+
       responses.forEach(response => {
         expect(response.body.status).toBe('healthy');
       });
@@ -189,9 +182,7 @@ describe('API Gateway', () => {
     it('should log request information', async () => {
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
 
-      await request(app)
-        .get('/health')
-        .expect(200);
+      await request(app).get('/health').expect(200);
 
       // In a real implementation, you would verify logging middleware calls
       consoleSpy.mockRestore();
@@ -200,15 +191,13 @@ describe('API Gateway', () => {
 
   describe('Security Headers', () => {
     it('should include security headers in responses', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       // Note: In a real implementation with helmet middleware, you would check for:
       // expect(response.headers['x-content-type-options']).toBe('nosniff');
       // expect(response.headers['x-frame-options']).toBe('DENY');
       // expect(response.headers['x-xss-protection']).toBe('1; mode=block');
-      
+
       expect(response.headers).toBeDefined();
     });
   });

@@ -7,7 +7,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 
 describe('ProfileService', () => {
   let profileService: ProfileService;
-  let userProfileRepository: Repository<UserProfile>;
+  let _userProfileRepository: Repository<UserProfile>;
 
   const mockUserProfile: UserProfile = {
     id: 'profile-id-123',
@@ -55,8 +55,8 @@ describe('ProfileService', () => {
     }).compile();
 
     profileService = module.get<ProfileService>(ProfileService);
-    userProfileRepository = module.get<Repository<UserProfile>>(
-      getRepositoryToken(UserProfile),
+    _userProfileRepository = module.get<Repository<UserProfile>>(
+      getRepositoryToken(UserProfile)
     );
   });
 
@@ -84,16 +84,20 @@ describe('ProfileService', () => {
       expect(mockUserProfileRepository.findOne).toHaveBeenCalledWith({
         where: { userId: createProfileDto.userId },
       });
-      expect(mockUserProfileRepository.create).toHaveBeenCalledWith(createProfileDto);
-      expect(mockUserProfileRepository.save).toHaveBeenCalledWith(mockUserProfile);
+      expect(mockUserProfileRepository.create).toHaveBeenCalledWith(
+        createProfileDto
+      );
+      expect(mockUserProfileRepository.save).toHaveBeenCalledWith(
+        mockUserProfile
+      );
     });
 
     it('should throw BadRequestException if profile already exists', async () => {
       mockUserProfileRepository.findOne.mockResolvedValue(mockUserProfile);
 
-      await expect(profileService.createProfile(createProfileDto)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(
+        profileService.createProfile(createProfileDto)
+      ).rejects.toThrow(BadRequestException);
       expect(mockUserProfileRepository.findOne).toHaveBeenCalledWith({
         where: { userId: createProfileDto.userId },
       });
@@ -119,7 +123,7 @@ describe('ProfileService', () => {
       mockUserProfileRepository.findOne.mockResolvedValue(null);
 
       await expect(profileService.getProfile(userId)).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
       expect(mockUserProfileRepository.findOne).toHaveBeenCalledWith({
         where: { userId },
@@ -137,17 +141,20 @@ describe('ProfileService', () => {
     it('should update user profile', async () => {
       const userId = 'user-id-123';
       const updatedProfile = { ...mockUserProfile, ...updateProfileDto };
-      
+
       mockUserProfileRepository.findOne.mockResolvedValue(mockUserProfile);
       mockUserProfileRepository.update.mockResolvedValue({ affected: 1 });
       mockUserProfileRepository.findOne.mockResolvedValueOnce(updatedProfile);
 
-      const result = await profileService.updateProfile(userId, updateProfileDto);
+      const result = await profileService.updateProfile(
+        userId,
+        updateProfileDto
+      );
 
       expect(result).toEqual(updatedProfile);
       expect(mockUserProfileRepository.update).toHaveBeenCalledWith(
         { userId },
-        updateProfileDto,
+        updateProfileDto
       );
     });
 
@@ -156,7 +163,7 @@ describe('ProfileService', () => {
       mockUserProfileRepository.findOne.mockResolvedValue(null);
 
       await expect(
-        profileService.updateProfile(userId, updateProfileDto),
+        profileService.updateProfile(userId, updateProfileDto)
       ).rejects.toThrow(NotFoundException);
     });
   });
@@ -177,7 +184,7 @@ describe('ProfileService', () => {
       mockUserProfileRepository.findOne.mockResolvedValue(null);
 
       await expect(profileService.deleteProfile(userId)).rejects.toThrow(
-        NotFoundException,
+        NotFoundException
       );
     });
   });
@@ -201,7 +208,9 @@ describe('ProfileService', () => {
         getCount: jest.fn().mockResolvedValue(1),
       };
 
-      mockUserProfileRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+      mockUserProfileRepository.createQueryBuilder.mockReturnValue(
+        mockQueryBuilder
+      );
 
       const result = await profileService.searchProfiles(searchFilters);
 
@@ -211,7 +220,9 @@ describe('ProfileService', () => {
         page: 1,
         limit: 10,
       });
-      expect(mockUserProfileRepository.createQueryBuilder).toHaveBeenCalledWith('profile');
+      expect(mockUserProfileRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'profile'
+      );
     });
 
     it('should handle pagination parameters', async () => {
@@ -220,7 +231,7 @@ describe('ProfileService', () => {
         page: 2,
         limit: 5,
       };
-      
+
       const mockQueryBuilder = {
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
@@ -231,7 +242,9 @@ describe('ProfileService', () => {
         getCount: jest.fn().mockResolvedValue(0),
       };
 
-      mockUserProfileRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+      mockUserProfileRepository.createQueryBuilder.mockReturnValue(
+        mockQueryBuilder
+      );
 
       await profileService.searchProfiles(paginationFilters);
 
@@ -262,16 +275,16 @@ describe('ProfileService', () => {
       expect(mockUserProfileRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
           stats: expect.objectContaining(newStats),
-        }),
+        })
       );
     });
 
     it('should throw NotFoundException if profile does not exist', async () => {
       mockUserProfileRepository.findOne.mockResolvedValue(null);
 
-      await expect(profileService.updateStats(userId, newStats)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        profileService.updateStats(userId, newStats)
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
@@ -291,13 +304,16 @@ describe('ProfileService', () => {
       };
       mockUserProfileRepository.save.mockResolvedValue(updatedProfile);
 
-      const result = await profileService.updateAchievements(userId, newAchievements);
+      const result = await profileService.updateAchievements(
+        userId,
+        newAchievements
+      );
 
       expect(result).toEqual(updatedProfile);
       expect(mockUserProfileRepository.save).toHaveBeenCalledWith(
         expect.objectContaining({
           achievements: expect.objectContaining(newAchievements),
-        }),
+        })
       );
     });
   });
@@ -322,7 +338,7 @@ describe('ProfileService', () => {
         expect.objectContaining({
           rating: newRating,
           totalReviews: mockUserProfile.totalReviews + 1,
-        }),
+        })
       );
     });
 
@@ -330,7 +346,7 @@ describe('ProfileService', () => {
       const invalidRating = 6.0; // Rating should be between 0-5
 
       await expect(
-        profileService.updateRating(userId, invalidRating),
+        profileService.updateRating(userId, invalidRating)
       ).rejects.toThrow(BadRequestException);
     });
   });

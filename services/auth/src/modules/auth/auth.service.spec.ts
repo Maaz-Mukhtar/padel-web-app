@@ -9,8 +9,8 @@ import { UnauthorizedException, ConflictException } from '@nestjs/common';
 
 describe('AuthService', () => {
   let authService: AuthService;
-  let userRepository: Repository<User>;
-  let jwtService: JwtService;
+  let _userRepository: Repository<User>;
+  let _jwtService: JwtService;
 
   const mockUser: User = {
     id: 'test-user-id',
@@ -54,8 +54,8 @@ describe('AuthService', () => {
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    userRepository = module.get<Repository<User>>(getRepositoryToken(User));
-    jwtService = module.get<JwtService>(JwtService);
+    _userRepository = module.get<Repository<User>>(getRepositoryToken(User));
+    _jwtService = module.get<JwtService>(JwtService);
   });
 
   afterEach(() => {
@@ -66,7 +66,7 @@ describe('AuthService', () => {
     it('should return user without password when credentials are valid', async () => {
       const email = 'test@example.com';
       const password = 'password123';
-      
+
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
 
@@ -173,7 +173,7 @@ describe('AuthService', () => {
       mockUserRepository.findOne.mockResolvedValue(mockUser);
 
       await expect(authService.register(registerDto)).rejects.toThrow(
-        ConflictException,
+        ConflictException
       );
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: registerDto.email },
@@ -209,7 +209,7 @@ describe('AuthService', () => {
       });
 
       await expect(authService.verifyToken(token)).rejects.toThrow(
-        UnauthorizedException,
+        UnauthorizedException
       );
     });
   });
@@ -251,7 +251,7 @@ describe('AuthService', () => {
       mockUserRepository.findOne.mockResolvedValue(null);
 
       await expect(authService.refreshToken(refreshToken)).rejects.toThrow(
-        UnauthorizedException,
+        UnauthorizedException
       );
     });
   });

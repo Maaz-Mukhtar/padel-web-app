@@ -29,26 +29,26 @@ import { Histogram, Counter, Gauge, register } from 'prom-client';
 
 describe('MetricsService', () => {
   let metricsService: MetricsService;
-  let mockHistogram: jest.Mocked<Histogram<string>>;
-  let mockCounter: jest.Mocked<Counter<string>>;
-  let mockGauge: jest.Mocked<Gauge<string>>;
+  let _mockHistogram: jest.Mocked<Histogram<string>>;
+  let _mockCounter: jest.Mocked<Counter<string>>;
+  let _mockGauge: jest.Mocked<Gauge<string>>;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
-    mockHistogram = new Histogram({
+
+    _mockHistogram = new Histogram({
       name: 'test_histogram',
       help: 'Test histogram',
       labelNames: ['label'],
     }) as jest.Mocked<Histogram<string>>;
-    
-    mockCounter = new Counter({
+
+    _mockCounter = new Counter({
       name: 'test_counter',
       help: 'Test counter',
       labelNames: ['label'],
     }) as jest.Mocked<Counter<string>>;
-    
-    mockGauge = new Gauge({
+
+    _mockGauge = new Gauge({
       name: 'test_gauge',
       help: 'Test gauge',
       labelNames: ['label'],
@@ -87,7 +87,13 @@ describe('MetricsService', () => {
       const duration = 0.5;
       const serviceName = 'test-service';
 
-      metricsService.recordHttpRequest(method, route, statusCode, duration, serviceName);
+      metricsService.recordHttpRequest(
+        method,
+        route,
+        statusCode,
+        duration,
+        serviceName
+      );
 
       // Verify that observe and inc methods would be called
       // Note: Since we're mocking the constructors, we can't directly verify the instance methods
@@ -97,15 +103,36 @@ describe('MetricsService', () => {
 
     it('should handle different HTTP methods and status codes', () => {
       const testCases = [
-        { method: 'POST', route: '/api/auth/login', statusCode: 201, duration: 0.3 },
-        { method: 'PUT', route: '/api/users/123', statusCode: 200, duration: 0.8 },
-        { method: 'DELETE', route: '/api/users/123', statusCode: 204, duration: 0.2 },
+        {
+          method: 'POST',
+          route: '/api/auth/login',
+          statusCode: 201,
+          duration: 0.3,
+        },
+        {
+          method: 'PUT',
+          route: '/api/users/123',
+          statusCode: 200,
+          duration: 0.8,
+        },
+        {
+          method: 'DELETE',
+          route: '/api/users/123',
+          statusCode: 204,
+          duration: 0.2,
+        },
         { method: 'GET', route: '/api/health', statusCode: 500, duration: 1.5 },
       ];
 
       testCases.forEach(({ method, route, statusCode, duration }) => {
         expect(() => {
-          metricsService.recordHttpRequest(method, route, statusCode, duration, 'test-service');
+          metricsService.recordHttpRequest(
+            method,
+            route,
+            statusCode,
+            duration,
+            'test-service'
+          );
         }).not.toThrow();
       });
     });
@@ -124,9 +151,18 @@ describe('MetricsService', () => {
 
     it('should handle different business metrics', () => {
       const testCases = [
-        { name: 'bookings_created', labels: { venue_id: 'venue-123', status: 'confirmed' } },
-        { name: 'payments_processed', labels: { method: 'card', currency: 'PKR' } },
-        { name: 'notifications_sent', labels: { type: 'email', template: 'booking_confirmation' } },
+        {
+          name: 'bookings_created',
+          labels: { venue_id: 'venue-123', status: 'confirmed' },
+        },
+        {
+          name: 'payments_processed',
+          labels: { method: 'card', currency: 'PKR' },
+        },
+        {
+          name: 'notifications_sent',
+          labels: { type: 'email', template: 'booking_confirmation' },
+        },
       ];
 
       testCases.forEach(({ name, labels }) => {
@@ -149,7 +185,7 @@ describe('MetricsService', () => {
   describe('createMetricsMiddleware', () => {
     it('should create Express middleware that records metrics', () => {
       const middleware = metricsService.createMetricsMiddleware('test-service');
-      
+
       const mockReq = {
         method: 'GET',
         path: '/api/test',
@@ -184,7 +220,13 @@ describe('MetricsService', () => {
 
       // This would test error handling in the actual implementation
       expect(() => {
-        metricsService.recordHttpRequest('GET', '/test', 200, 0.1, 'test-service');
+        metricsService.recordHttpRequest(
+          'GET',
+          '/test',
+          200,
+          0.1,
+          'test-service'
+        );
       }).not.toThrow();
 
       console.error = originalConsoleError;
